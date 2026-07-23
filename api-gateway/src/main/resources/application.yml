@@ -3,4 +3,26 @@ server:
 
 spring:
   application:
-    name: order-service
+    name: api-gateway
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            # Microservicio Pedidos
+            - id: order-service-route
+              uri: http://order-service:8081
+              predicates:
+                - Path=/api/orders/**
+
+            # Microservicio Inventario
+            - id: inventory-service-route
+              uri: http://inventory-service:8082
+              predicates:
+                - Path=/api/products/**
+
+            # Microservicio Notificaciones
+            - id: notification-service-ws-route
+              uri: ws://notification-service:8083
+              predicates:
+                - Path=/ws/**,/ws

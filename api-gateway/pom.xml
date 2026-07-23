@@ -30,7 +30,7 @@
 	</dependencyManagement>
 
 	<dependencies>
-		<!-- Staack Reactive/Webflux -->
+		<!-- Stack Reactive/Webflux -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webflux</artifactId>
@@ -38,7 +38,8 @@
 		<!-- Starters Spring Cloud Gateway -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-gateway-server-webflux</artifactId>
+			<artifactId>spring-cloud-starter-gateway</artifactId>
+			<version>4.3.5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
