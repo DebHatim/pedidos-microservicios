@@ -1,4 +1,4 @@
-package dev.hatimdebboun.api_gateway;
+package dev.hatimdebboun.apigateway;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
