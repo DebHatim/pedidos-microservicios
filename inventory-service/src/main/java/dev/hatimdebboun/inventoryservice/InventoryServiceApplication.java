@@ -1,13 +1,13 @@
-package dev.hatimdebboun.notification_service;
+package dev.hatimdebboun.inventoryservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class NotificationServiceApplication {
+public class InventoryServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(NotificationServiceApplication.class, args);
+		SpringApplication.run(InventoryServiceApplication.class, args);
 	}
 
 }
