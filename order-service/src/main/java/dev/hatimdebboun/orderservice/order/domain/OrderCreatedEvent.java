@@ -1,7 +1,7 @@
 package dev.hatimdebboun.orderservice.order.domain;
 
-import dev.hatimdebboun.orderservice.order.api.OrderDTO;
-
 import java.util.List;
 
-public record OrderCreatedEvent(Long orderId, List<OrderDTO.OrderItemRequest> items) {}
+public record OrderCreatedEvent(Long orderId, List<OrderItemEvent> items) {
+    public record OrderItemEvent(Long productId, Long quantity) {}
+}
