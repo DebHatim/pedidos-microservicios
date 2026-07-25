@@ -4,3 +4,7 @@ server:
 spring:
   application:
     name: order-service
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
