@@ -42,10 +42,11 @@ public class KafkaConfig {
         Map<String, Object> config = new HashMap<>();
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         config.put(ConsumerConfig.GROUP_ID_CONFIG, "inventory-group");
-        config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JacksonJsonDeserializer.class);
-        config.put(JacksonJsonDeserializer.TRUSTED_PACKAGES, "dev.hatimdebboun.inventoryservice.stock.domain");
-        return new DefaultKafkaConsumerFactory<>(config);
+
+        JacksonJsonDeserializer<OrderCreatedEvent> deserializer =
+                new JacksonJsonDeserializer<>(OrderCreatedEvent.class).ignoreTypeHeaders();
+
+        return new DefaultKafkaConsumerFactory<>(config, new StringDeserializer(), deserializer);
     }
 
     @Bean
