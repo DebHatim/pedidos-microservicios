@@ -30,6 +30,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: order_db
+    volumes:
+      - order-mysql-data:/var/lib/mysql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 5s
@@ -45,6 +47,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: inventory_db
+    volumes:
+      - inventory-mysql-data:/var/lib/mysql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 5s
@@ -105,3 +109,6 @@ services:
       - order-service
       - inventory-service
       - notification-service
+volumes:
+    order-mysql-data:
+    inventory-mysql-data:
