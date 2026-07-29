@@ -1,4 +1,17 @@
 services:
+  # Configuracion Redis
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    ports:
+      - "127.0.0.1:6379:6379"
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   # Configuracion del servicio de Kafka con la imagen oficial de Apache Kafka
   kafka:
     image: apache/kafka:3.8.0
@@ -105,10 +118,17 @@ services:
     container_name: api-gateway
     ports:
       - "127.0.0.1:8080:8080"
+    environment:
+      SPRING_DATA_REDIS_HOST: redis
     depends_on:
-      - order-service
-      - inventory-service
-      - notification-service
+      redis:
+        condition: service_healthy
+      order-service:
+        condition: service_started
+      inventory-service:
+        condition: service_started
+      notification-service:
+        condition: service_started
 volumes:
     order-mysql-data:
     inventory-mysql-data:
