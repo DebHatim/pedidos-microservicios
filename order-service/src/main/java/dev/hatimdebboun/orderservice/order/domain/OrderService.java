@@ -14,7 +14,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final KafkaTemplate<String, OrderCreatedEvent> kafkaTemplate;
 
-    public void createOrder(OrderDTO dto) {
+    public Long createOrder(OrderDTO dto) {
         Order order = new Order();
         order.setItems(mapToOrderItems(dto.items()));
         order.setStatus(OrderStatus.PENDING);
@@ -24,6 +24,8 @@ public class OrderService {
 
         OrderCreatedEvent event = new OrderCreatedEvent(saved.getId(), mapToEventItems(saved.getItems()));
         kafkaTemplate.send("order-created", saved.getId().toString(), event);
+
+        return saved.getId();
     }
 
     private List<OrderItem> mapToOrderItems(List<OrderDTO.OrderItemRequest> items) {

@@ -18,8 +18,8 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
-    public ResponseEntity<Void> createOrder(@Valid @RequestBody OrderDTO dto) {
-        orderService.createOrder(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<OrderResponse> createOrder(@Valid @RequestBody OrderDTO dto) {
+        Long orderId = orderService.createOrder(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new OrderResponse(orderId));
     }
 }
