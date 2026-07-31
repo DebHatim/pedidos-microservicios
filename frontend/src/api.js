@@ -20,4 +20,6 @@ export async function createOrder(orderDTO) {
     if (!response.ok) {
         throw new Error(`No se pudo crear el pedido (HTTP ${response.status})`)
     }
+
+    return response.json()
 }
