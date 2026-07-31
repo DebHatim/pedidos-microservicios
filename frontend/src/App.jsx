@@ -106,6 +106,7 @@ export default function App() {
                 cartItems={cart.cartItems}
                 total={cart.total}
                 submitStatus={cart.submitStatus}
+                resultMessage={cart.resultMessage}
                 onIncrement={cart.increment}
                 onDecrement={cart.decrement}
                 onRemove={cart.removeItem}

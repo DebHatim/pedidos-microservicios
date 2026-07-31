@@ -11,6 +11,7 @@ export default function CartPanel({
                                       cartItems,
                                       total,
                                       submitStatus,
+                                      resultMessage,
                                       onIncrement,
                                       onDecrement,
                                       onRemove,
@@ -21,6 +22,7 @@ export default function CartPanel({
 
     const isEmpty = cartItems.length === 0
     const isSubmitting = submitStatus === 'submitting'
+    const isFinalResult = submitStatus === 'waiting' || submitStatus === 'confirmed' || submitStatus === 'rejected'
 
     return (
         <>
@@ -34,24 +36,41 @@ export default function CartPanel({
                     </button>
                 </div>
 
-                {submitStatus === 'success' && (
+                {submitStatus === 'waiting' && (
                     <div className="cart-result cart-result--success">
                         <p className="cart-result__title">Pedido enviado</p>
                         <p className="cart-result__text">
-                            Se está comprobando el stock disponible. Recibirás la confirmación en cuanto
-                            inventory-service procese el pedido.
+                            Se está comprobando el stock disponible. Recibirás la confirmación en tiempo real
+                            en cuanto inventory-service procese el pedido.
                         </p>
+                    </div>
+                )}
+
+                {submitStatus === 'confirmed' && (
+                    <div className="cart-result cart-result--success">
+                        <p className="cart-result__title">Pedido confirmado</p>
+                        <p className="cart-result__text">{resultMessage}</p>
                         <button type="button" className="state-panel__retry" onClick={onDismissResult}>
                             Seguir comprando
                         </button>
                     </div>
                 )}
 
-                {submitStatus !== 'success' && isEmpty && (
+                {submitStatus === 'rejected' && (
+                    <div className="cart-result" style={{ background: '#F7E6E1', border: '1px solid var(--color-out-stock)' }}>
+                        <p className="cart-result__title" style={{ color: 'var(--color-out-stock)' }}>Pedido rechazado</p>
+                        <p className="cart-result__text">{resultMessage}</p>
+                        <button type="button" className="state-panel__retry" onClick={onDismissResult}>
+                            Seguir comprando
+                        </button>
+                    </div>
+                )}
+
+                {!isFinalResult && isEmpty && (
                     <p className="cart-panel__empty">Todavía no has añadido ningún producto.</p>
                 )}
 
-                {submitStatus !== 'success' && !isEmpty && (
+                {!isFinalResult && !isEmpty && (
                     <>
                         <ul className="cart-row-list">
                             {cartItems.map((entry) => (

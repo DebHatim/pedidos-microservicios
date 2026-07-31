@@ -1,11 +1,35 @@
-import { useMemo, useState } from 'react'
-import { createOrder } from '../api.js'
+import {useEffect, useMemo, useRef, useState} from 'react'
+import {createOrder} from '../api.js'
+import {createStompClient} from "../ws.js";
 
 // El carrito vive como Map<productId, { product, quantity }>
 export function useCart() {
     const [items, setItems] = useState(new Map())
     const [isOpen, setIsOpen] = useState(false)
-    const [submitStatus, setSubmitStatus] = useState('idle') // idle | submitting | success | error
+    const [submitStatus, setSubmitStatus] = useState('idle') // idle | submitting | waiting | confirmed | rejected | error
+    const [resultMessage, setResultMessage] = useState('')
+
+    const pendingOrderIdRef = useRef(null)
+
+    // Conexion STOMP unica para toda la sesion, se suscribe a las notificaciones de los pedidos
+    useEffect(() => {
+        const client = createStompClient(() => {
+            client.subscribe('/topic/notifications', (message) => {
+                const notification = JSON.parse(message.body)
+
+                if (notification.orderId !== pendingOrderIdRef.current) return
+
+                const isConfirmed = notification.message.toLowerCase().includes('confirmado')
+                setSubmitStatus(isConfirmed ? 'confirmed' : 'rejected')
+                setResultMessage(notification.message)
+                pendingOrderIdRef.current = null
+            })
+        })
+
+        return () => {
+            client.deactivate()
+        }
+    }, [])
 
     function addToCart(product) {
         setItems((current) => {
@@ -86,8 +110,9 @@ export function useCart() {
         }
 
         try {
-            await createOrder(orderDTO)
-            setSubmitStatus('success')
+            const {orderId} = await createOrder(orderDTO)
+            pendingOrderIdRef.current = orderId
+            setSubmitStatus('waiting')
             clearCart()
         } catch {
             setSubmitStatus('error')
@@ -102,6 +127,7 @@ export function useCart() {
         setIsOpen,
         submitStatus,
         setSubmitStatus,
+        resultMessage,
         addToCart,
         increment,
         decrement,
