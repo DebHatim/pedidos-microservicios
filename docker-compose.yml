@@ -1,6 +1,16 @@
 services:
+  # Configuracion Frontend React
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: http://localhost:8080
+    container_name: frontend
+    ports:
+      - "127.0.0.1:80:80"
+    depends_on:
+      - api-gateway
   # Configuracion Redis
-
   redis:
     image: redis:7-alpine
     container_name: redis
