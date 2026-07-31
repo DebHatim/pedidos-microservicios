@@ -1,0 +1,111 @@
+import { useMemo, useState } from 'react'
+import { createOrder } from '../api.js'
+
+// El carrito vive como Map<productId, { product, quantity }>
+export function useCart() {
+    const [items, setItems] = useState(new Map())
+    const [isOpen, setIsOpen] = useState(false)
+    const [submitStatus, setSubmitStatus] = useState('idle') // idle | submitting | success | error
+
+    function addToCart(product) {
+        setItems((current) => {
+            const next = new Map(current)
+            const existing = next.get(product.id)
+            const currentQuantity = existing ? existing.quantity : 0
+
+            if (currentQuantity >= product.stock) return current
+
+            next.set(product.id, { product, quantity: currentQuantity + 1 })
+            return next
+        })
+        setSubmitStatus('idle')
+        setIsOpen(true)
+    }
+
+    function increment(productId) {
+        setItems((current) => {
+            const entry = current.get(productId)
+            if (!entry || entry.quantity >= entry.product.stock) return current
+
+            const next = new Map(current)
+            next.set(productId, { ...entry, quantity: entry.quantity + 1 })
+            return next
+        })
+    }
+
+    function decrement(productId) {
+        setItems((current) => {
+            const entry = current.get(productId)
+            if (!entry) return current
+
+            const next = new Map(current)
+            if (entry.quantity <= 1) {
+                next.delete(productId)
+            } else {
+                next.set(productId, { ...entry, quantity: entry.quantity - 1 })
+            }
+            return next
+        })
+    }
+
+    function removeItem(productId) {
+        setItems((current) => {
+            const next = new Map(current)
+            next.delete(productId)
+            return next
+        })
+    }
+
+    function clearCart() {
+        setItems(new Map())
+    }
+
+    const cartItems = useMemo(() => Array.from(items.values()), [items])
+
+    const itemCount = useMemo(
+        () => cartItems.reduce((sum, entry) => sum + entry.quantity, 0),
+        [cartItems]
+    )
+
+    const total = useMemo(
+        () => cartItems.reduce((sum, entry) => sum + entry.product.price * entry.quantity, 0),
+        [cartItems]
+    )
+
+    async function submitOrder() {
+        if (cartItems.length === 0) return
+
+        setSubmitStatus('submitting')
+
+        const orderDTO = {
+            total,
+            items: cartItems.map((entry) => ({
+                productId: entry.product.id,
+                quantity: entry.quantity
+            }))
+        }
+
+        try {
+            await createOrder(orderDTO)
+            setSubmitStatus('success')
+            clearCart()
+        } catch {
+            setSubmitStatus('error')
+        }
+    }
+
+    return {
+        cartItems,
+        itemCount,
+        total,
+        isOpen,
+        setIsOpen,
+        submitStatus,
+        setSubmitStatus,
+        addToCart,
+        increment,
+        decrement,
+        removeItem,
+        submitOrder
+    }
+}
