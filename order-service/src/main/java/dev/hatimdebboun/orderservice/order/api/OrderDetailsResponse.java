@@ -8,7 +8,7 @@ public record OrderDetailsResponse(
         Long id,
         OrderStatus status,
         BigDecimal total,
-        List items
+        List<OrderItemResponse> items
 ) {
     public record OrderItemResponse(
             Long productId,

@@ -35,7 +35,6 @@ public class OrderService {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
 
-        // El mapeo ocurre dentro del servicio
         List<OrderDetailsResponse.OrderItemResponse> items = order.getItems().stream()
                 .map(item -> new OrderDetailsResponse.OrderItemResponse(item.getProductId(), item.getQuantity()))
                 .toList();
