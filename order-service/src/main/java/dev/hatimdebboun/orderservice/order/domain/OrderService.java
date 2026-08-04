@@ -3,10 +3,8 @@ package dev.hatimdebboun.orderservice.order.domain;
 import dev.hatimdebboun.orderservice.order.api.OrderDTO;
 import dev.hatimdebboun.orderservice.order.api.OrderDetailsResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -32,8 +30,7 @@ public class OrderService {
     }
 
     public OrderDetailsResponse getOrderById(Long id) {
-        Order order = orderRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
+        Order order = orderRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
 
         List<OrderDetailsResponse.OrderItemResponse> items = order.getItems().stream()
                 .map(item -> new OrderDetailsResponse.OrderItemResponse(item.getProductId(), item.getQuantity()))
