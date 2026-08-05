@@ -1,6 +1,7 @@
 package dev.hatimdebboun.inventoryservice.stock.domain;
 
 import dev.hatimdebboun.inventoryservice.product.domain.Product;
+import dev.hatimdebboun.inventoryservice.product.domain.ProductNotFoundException;
 import dev.hatimdebboun.inventoryservice.product.domain.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -16,13 +17,19 @@ public class StockReservationService {
 
     // Metodo para verificar la existencia del producto y si tiene stock disponible
     public void evaluateOrder(OrderCreatedEvent event) {
-        boolean hasEnoughStock = event.items().stream()
-                .allMatch(this::hasEnoughStock);
+        try {
+            boolean hasEnoughStock = event.items().stream().allMatch(this::hasEnoughStock);
 
-        if (hasEnoughStock) {
-            event.items().forEach(this::reduceStock);
-            publish(event.orderId(), "CONFIRMED");
-        } else {
+            if (hasEnoughStock) {
+                event.items().forEach(this::reduceStock);
+                publish(event.orderId(), "CONFIRMED");
+            }
+            else {
+                publish(event.orderId(), "REJECTED");
+            }
+        } catch (ProductNotFoundException e) {
+            System.err.println("CRITICAL: Order " + event.orderId() +
+                    " rejected because a product was missing: " + e.getMessage());
             publish(event.orderId(), "REJECTED");
         }
     }
@@ -30,14 +37,14 @@ public class StockReservationService {
     // Metodo que valida que el producto exista y que tenga stock suficiente para la cantidad solicitada
     private boolean hasEnoughStock(OrderCreatedEvent.OrderItemEvent item) {
         Product product = productRepository.findById(item.productId())
-                .orElseThrow(() -> new IllegalArgumentException("Product not found: " + item.productId()));
+                .orElseThrow(() -> new ProductNotFoundException(item.productId()));
         return product.getStock() >= item.quantity();
     }
 
     // Metodo para descontar el stock del producto y persistir el nuevo valor
     private void reduceStock(OrderCreatedEvent.OrderItemEvent item) {
         Product product = productRepository.findById(item.productId())
-                .orElseThrow(() -> new IllegalArgumentException("Product not found: " + item.productId()));
+                .orElseThrow(() -> new ProductNotFoundException(item.productId()));
         product.setStock(product.getStock() - item.quantity());
         productRepository.save(product);
     }
