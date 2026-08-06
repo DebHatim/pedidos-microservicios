@@ -29,9 +29,17 @@ public class OrderService {
         return saved.getId();
     }
 
+    public List<OrderDetailsResponse> getAllOrders() {
+        return orderRepository.findAll().stream().map(this::mapToOrderDetailsResponse).toList();
+    }
+
     public OrderDetailsResponse getOrderById(Long id) {
         Order order = orderRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
 
+        return mapToOrderDetailsResponse(order);
+    }
+
+    private OrderDetailsResponse mapToOrderDetailsResponse(Order order) {
         List<OrderDetailsResponse.OrderItemResponse> items = order.getItems().stream()
                 .map(item -> new OrderDetailsResponse.OrderItemResponse(item.getProductId(), item.getQuantity()))
                 .toList();
