@@ -12,16 +12,10 @@ public class InventoryEvaluatorService {
 
     @KafkaListener(topics = "order-evaluated", groupId = "orders-group")
     public void evaluateInventory(StockEvaluatedEvent event) {
-        try {
-            Order order = orderRepository.findById(event.orderId())
-                    .orElseThrow(() -> new OrderNotFoundException(event.orderId()));
+        Order order = orderRepository.findById(event.orderId())
+                .orElseThrow(() -> new OrderNotFoundException(event.orderId()));
 
-            order.setStatus("CONFIRMED".equals(event.status()) ? OrderStatus.CONFIRMED : OrderStatus.REJECTED);
-            orderRepository.save(order);
-        }
-        catch (OrderNotFoundException ex) {
-            System.err.println("CRITICAL: Received event for non-existent order: " + event.orderId());
-        }
-
+        order.setStatus("CONFIRMED".equals(event.status()) ? OrderStatus.CONFIRMED : OrderStatus.REJECTED);
+        orderRepository.save(order);
     }
 }
