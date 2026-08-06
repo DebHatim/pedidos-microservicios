@@ -1,11 +1,19 @@
+# Puerto del servidor
 server:
   port: 8080
 
+# Nombre de la aplicacion
 spring:
   application:
     name: api-gateway
+  # Configuracion timeouts para el cliente HTTP del gateway
   cloud:
     gateway:
+      httpclient:
+        connect-timeout: 2000
+        response-timeout: 5s
+
+      # Configuracion WebFlux para CORS y rutas
       server:
         webflux:
           globalcors:
@@ -24,30 +32,67 @@ spring:
                 allowedHeaders:
                   - "*"
                 allowCredentials: true
+
+          # Configuracion de rutas para los microservicios
           routes:
             # Microservicio Pedidos
             - id: order-service-route
               uri: http://order-service:8081
               predicates:
                 - Path=/api/orders/**
+              metadata:
+                connect-timeout: 1000
+                response-timeout: 5000
               filters:
+                # Filtro de limitacion con Rate Limiting
                 - name: RequestRateLimiter
                   args:
                     redis-rate-limiter.replenishRate: 10
                     redis-rate-limiter.burstCapacity: 20
                     key-resolver: "#{@ipKeyResolver}"
+                # Filtro de reintentos con Retry
+                - name: Retry
+                  args:
+                    retries: 3
+                    statuses: BAD_GATEWAY, SERVICE_UNAVAILABLE, GATEWAY_TIMEOUT
+                    methods: GET
+                    backoff:
+                      firstBackoff: 100ms
+                      maxBackoff: 500ms
+                      factor: 2
+                      basedOnPreviousValue: true
+                # Filtro de Circuit Breaker para manejar fallos en el microservicio
+                - name: CircuitBreaker
+                  args:
+                    name: orderServiceCircuitBreaker
+                    fallbackUri: forward:/fallback/orders
 
             # Microservicio Inventario
             - id: inventory-service-route
               uri: http://inventory-service:8082
               predicates:
                 - Path=/api/products/**
+              metadata:
+                connect-timeout: 1000
+                response-timeout: 3000
               filters:
+                # Filtro de limitacion con Rate Limiting
                 - name: RequestRateLimiter
                   args:
                     redis-rate-limiter.replenishRate: 10
                     redis-rate-limiter.burstCapacity: 20
                     key-resolver: "#{@ipKeyResolver}"
+                # Filtro de reintentos con Retry
+                - name: Retry
+                  args:
+                    retries: 3
+                    statuses: BAD_GATEWAY, SERVICE_UNAVAILABLE, GATEWAY_TIMEOUT
+                    methods: GET
+                # Filtro de Circuit Breaker para manejar fallos en el microservicio
+                - name: CircuitBreaker
+                  args:
+                    name: inventoryServiceCircuitBreaker
+                    fallbackUri: forward:/fallback/inventory
 
             # Microservicio Notificaciones
             - id: notification-service-ws-route
