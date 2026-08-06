@@ -1,7 +1,6 @@
 package dev.hatimdebboun.inventoryservice.shared.config;
 
 import dev.hatimdebboun.inventoryservice.stock.domain.OrderCreatedEvent;
-import dev.hatimdebboun.inventoryservice.stock.domain.StockEvaluatedEvent;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -11,8 +10,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.*;
+import org.springframework.kafka.listener.DeadLetterPublishingRecoverer;
+import org.springframework.kafka.listener.DefaultErrorHandler;
 import org.springframework.kafka.support.serializer.JacksonJsonDeserializer;
 import org.springframework.kafka.support.serializer.JacksonJsonSerializer;
+import org.springframework.util.backoff.FixedBackOff;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +26,7 @@ public class KafkaConfig {
     private String bootstrapServers;
 
     @Bean
-    public ProducerFactory<String, StockEvaluatedEvent> producerFactory() {
+    public ProducerFactory<String, Object> producerFactory() {
         Map<String, Object> config = new HashMap<>();
         config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -33,8 +35,17 @@ public class KafkaConfig {
     }
 
     @Bean
-    public KafkaTemplate<String, StockEvaluatedEvent> kafkaTemplate() {
+    public KafkaTemplate<String, Object> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
+    }
+
+    // Error handler por si falla el listener
+    @Bean
+    public DefaultErrorHandler errorHandler(KafkaTemplate<String, Object> template) {
+        return new DefaultErrorHandler(
+                new DeadLetterPublishingRecoverer(template),
+                new FixedBackOff(2000L, 3)
+        );
     }
 
     @Bean
@@ -51,10 +62,11 @@ public class KafkaConfig {
 
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, OrderCreatedEvent> kafkaListenerContainerFactory(
-            ConsumerFactory<String, OrderCreatedEvent> consumerFactory) {
+            ConsumerFactory<String, OrderCreatedEvent> consumerFactory, DefaultErrorHandler errorHandler) {
         ConcurrentKafkaListenerContainerFactory<String, OrderCreatedEvent> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory);
+        factory.setCommonErrorHandler(errorHandler);
         return factory;
     }
 }

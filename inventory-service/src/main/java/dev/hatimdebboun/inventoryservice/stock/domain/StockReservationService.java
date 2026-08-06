@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 public class StockReservationService {
 
     private final ProductRepository productRepository;
-    private final KafkaTemplate<String, StockEvaluatedEvent> kafkaTemplate;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
     // Metodo para verificar la existencia del producto y si tiene stock disponible
     public void evaluateOrder(OrderCreatedEvent event) {
