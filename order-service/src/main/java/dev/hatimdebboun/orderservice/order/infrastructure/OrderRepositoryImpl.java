@@ -27,6 +27,11 @@ public class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
+    public List<Order> findAll() {
+        return orderJpaRepository.findAll().stream().map(this::toDomain).toList();
+    }
+
+    @Override
     public Optional<Order> findById(Long id) {
         return orderJpaRepository.findById(id).map(this::toDomain);
     }
