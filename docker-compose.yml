@@ -10,6 +10,7 @@ services:
       - "127.0.0.1:80:80"
     depends_on:
       - api-gateway
+
   # Configuracion Redis
   redis:
     image: redis:7-alpine
@@ -21,6 +22,37 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+
+  # Config Jaeger (Tracing Distribuido)
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: jaeger
+    ports:
+      - "16686:16686" # Interfaz Jaeger
+      - "4317:4317"   # OTLPs
+      - "4318:4318"
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+
+  # Config Prometheus (Recolector de Metricas)
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090" # Interfaz Prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+
+  # Config Grafana (Dashboards)
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000" # Interfaz Grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    depends_on:
+      - prometheus
 
   # Configuracion del servicio de Kafka con la imagen oficial de Apache Kafka
   kafka:
@@ -78,7 +110,7 @@ services:
       timeout: 5s
       retries: 10
 
-  # Configuracion de los microservicios de pedidos, inventario y notificaciones
+  # Configuracion de los microservicios de pedidos
   order-service:
     build: ./order-service
     container_name: order-service
@@ -95,6 +127,7 @@ services:
       kafka:
         condition: service_healthy
 
+  # Configuracion de los microservicios de inventario
   inventory-service:
     build: ./inventory-service
     container_name: inventory-service
@@ -111,6 +144,7 @@ services:
       kafka:
         condition: service_healthy
 
+  # Configuracion de los microservicios de notificaciones
   notification-service:
     build: ./notification-service
     container_name: notification-service
@@ -130,6 +164,8 @@ services:
       - "127.0.0.1:8080:8080"
     environment:
       SPRING_DATA_REDIS_HOST: redis
+      MANAGEMENT_OTLP_TRACING_ENDPOINT: http://jaeger:4318/v1/traces
+      OTEL_SERVICE_NAME: api-gateway
     depends_on:
       redis:
         condition: service_healthy
@@ -138,6 +174,8 @@ services:
       inventory-service:
         condition: service_started
       notification-service:
+        condition: service_started
+      jaeger:
         condition: service_started
 volumes:
     order-mysql-data:
