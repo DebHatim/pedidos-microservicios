@@ -10,8 +10,9 @@ public class InventoryEvaluatorService {
 
     private final OrderRepository orderRepository;
 
-    @KafkaListener(topics = "order-evaluated", groupId = "orders-group")
+    @KafkaListener(topics = "order-evaluated", groupId = "orders-group", containerFactory = "kafkaListenerContainerFactory")
     public void evaluateInventory(StockEvaluatedEvent event) {
+        System.out.println(">>> LLEGÓ order-evaluated: " + event);
         Order order = orderRepository.findById(event.orderId())
                 .orElseThrow(() -> new OrderNotFoundException(event.orderId()));
 
