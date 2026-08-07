@@ -28,3 +28,7 @@ management:
     tracing:
       # URL de Jaeger en la red de Docker Compose usando el puerto HTTP OTLP
       endpoint: http://jaeger:4318/v1/traces
+logging:
+  level:
+    org.springframework.kafka: DEBUG
+    org.apache.kafka: WARN
