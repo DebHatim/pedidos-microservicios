@@ -1,5 +1,5 @@
 import {useEffect, useMemo, useRef, useState} from 'react'
-import {createOrder} from '../api.js'
+import {createOrder, getOrder} from '../api.js'
 import {createStompClient} from "../ws.js";
 
 // El carrito vive como Map<productId, { product, quantity }>
@@ -26,10 +26,67 @@ export function useCart() {
             })
         })
 
+        client.onWebSocketClose = (event) => {
+            if (pendingOrderIdRef.current) {
+                setSubmitStatus('error')
+                setResultMessage('Se perdió la conexión con el servidor. No pudimos confirmar el pedido.')
+                pendingOrderIdRef.current = null
+            }
+        }
+
         return () => {
             client.deactivate()
         }
-    }, [])
+    }, []);
+
+    // useEffect para el fallback
+    useEffect(() => {
+        // Si no estamos esperando un pedido, no hacemos nada
+        if (submitStatus !== 'waiting' || !pendingOrderIdRef.current) return;
+
+        let pollInterval;
+
+        // Lanzamos un temporizador de 8 segundos
+        const timeoutId = setTimeout(() => {
+            console.log('STOMP tardando mucho, iniciando polling...');
+
+            // Cuando terminen los 8s, lanzamos el setInterval cada 3s
+            pollInterval = setInterval(async () => {
+                try {
+                    const orderId = pendingOrderIdRef.current;
+                    if (!orderId) {
+                        clearInterval(pollInterval);
+                        return;
+                    }
+
+                    // Hacemos GET al backend
+                    const order = await getOrder(orderId);
+
+                    // Si el estado ya no es PENDING, actualizamos el estado y limpiamos el polling
+                    if (order.status !== 'PENDING') {
+                        const isConfirmed = order.status === 'CONFIRMED';
+
+                        setSubmitStatus(isConfirmed ? 'confirmed' : 'rejected');
+                        setResultMessage(`Pedido ${isConfirmed ? 'confirmado' : 'rechazado'}`);
+                        pendingOrderIdRef.current = null;
+
+                        clearInterval(pollInterval);
+                    }
+                } catch (error) {
+                    console.error("Error durante el polling:", error);
+                    // setSubmitStatus('error') si falla
+                }
+            }, 3000);
+
+        }, 8000);
+
+        return () => {
+            clearTimeout(timeoutId);
+            if (pollInterval) {
+                clearInterval(pollInterval); // Cancelar el polling
+            }
+        };
+    }, [submitStatus]);
 
     function addToCart(product) {
         setItems((current) => {

@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { fetchProducts } from './api.js'
 import { useCart } from './hooks/useCart.js'
+import { useNotifications } from './hooks/useNotifications.js'
+import ToastStack from './components/ToastStack.jsx'
 import Header from './components/Header.jsx'
 import CategoryFilter from './components/CategoryFilter.jsx'
 import ProductGrid from './components/ProductGrid.jsx'
@@ -14,6 +16,8 @@ export default function App() {
     const [status, setStatus] = useState('loading') // loading | success | error
     const [selectedCategory, setSelectedCategory] = useState('ALL')
     const [reloadKey, setReloadKey] = useState(0)
+
+    const { toasts, dismiss } = useNotifications()
 
     const cart = useCart()
     const cartQuantities = useMemo(
@@ -116,6 +120,8 @@ export default function App() {
                     cart.setIsOpen(false)
                 }}
             />
+
+            <ToastStack toasts={toasts} onDismiss={dismiss} />
         </div>
     )
 }
