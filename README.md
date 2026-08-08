@@ -51,19 +51,19 @@ disponible.
 
 ## Stack
 
-| Capa                | Tecnología                                                                 |
-|---------------------|------------------------------------------------------------------------------|
-| Backend             | Java 21 · Spring Boot 4.1                                                    |
-| Gateway             | Spring Cloud Gateway (WebFlux)                                               |
-| Mensajería          | Apache Kafka (modo KRaft, sin Zookeeper)                                     |
-| Resiliencia         | Resilience4j (circuit breaker) · Retry · Rate limiting (Redis)               |
-| Persistencia        | JPA/Hibernate · MySQL 8 (una base de datos por servicio)                     |
-| Tiempo real         | WebSocket · STOMP                                                            |
-| Documentación API   | springdoc-openapi (Swagger UI) por servicio                                  |
-| Observabilidad      | Spring Boot Actuator · Micrometer · Prometheus · Grafana · Jaeger (OTLP)     |
-| Frontend            | React 18 · Vite · @stomp/stompjs                                             |
-| Infraestructura     | Docker Compose (4 microservicios, 2 MySQL, Kafka, Redis, frontend + nginx)   |
-| Build               | Maven · Lombok                                                               |
+| Capa              | Tecnología                                                                 |
+|-------------------|----------------------------------------------------------------------------|
+| Backend           | Java 21 · Spring Boot 4.1                                                  |
+| Gateway           | Spring Cloud Gateway (WebFlux)                                             |
+| Mensajería        | Apache Kafka (modo KRaft, sin Zookeeper)                                   |
+| Resiliencia       | Resilience4j (circuit breaker) · Retry · Rate limiting (Redis)             |
+| Persistencia      | JPA/Hibernate · MySQL 8 (una base de datos por servicio)                   |
+| Tiempo real       | WebSocket · STOMP                                                          |
+| Documentación API | springdoc-openapi (Swagger UI) por servicio                                |
+| Observabilidad    | Spring Boot Actuator · Micrometer · Prometheus · Grafana · Jaeger (OTLP)   |
+| Frontend          | React 18 · Vite · @stomp/stompjs                                           |
+| Infraestructura   | Docker Compose (4 microservicios, 2 MySQL, Kafka, Redis, frontend + nginx) |
+| Build             | Maven · Lombok                                                             |
 
 ## Funcionalidades
 
@@ -148,43 +148,43 @@ problema, algo que un dashboard de métricas agregadas no puede mostrar por sí 
 
 **api-gateway**
 
-| Dependencia                                       | Propósito                                                    |
-|----------------------------------------------------|---------------------------------------------------------------|
-| spring-boot-starter-webflux                        | Stack reactivo sobre el que corre Spring Cloud Gateway         |
-| spring-cloud-starter-gateway-server-webflux         | Enrutamiento reactivo hacia los microservicios                |
-| spring-cloud-starter-circuitbreaker-reactor-resilience4j | Circuit breaker por ruta                                  |
-| spring-boot-starter-data-redis-reactive             | Backend de Redis para el rate limiter del gateway              |
-| resilience4j-spring-boot4                           | Configuración de resiliencia (circuit breaker, retry)          |
-| micrometer-registry-prometheus                      | Métricas del gateway en formato Prometheus vía Actuator        |
-| micrometer-tracing-bridge-otel                      | Trazas del gateway hacia Jaeger vía OTLP                       |
-| springdoc-openapi-starter-webflux-ui                | Swagger UI agregando la documentación de los servicios         |
+| Dependencia                                              | Propósito                                               |
+|----------------------------------------------------------|---------------------------------------------------------|
+| spring-boot-starter-webflux                              | Stack reactivo sobre el que corre Spring Cloud Gateway  |
+| spring-cloud-starter-gateway-server-webflux              | Enrutamiento reactivo hacia los microservicios          |
+| spring-cloud-starter-circuitbreaker-reactor-resilience4j | Circuit breaker por ruta                                |
+| spring-boot-starter-data-redis-reactive                  | Backend de Redis para el rate limiter del gateway       |
+| resilience4j-spring-boot4                                | Configuración de resiliencia (circuit breaker, retry)   |
+| micrometer-registry-prometheus                           | Métricas del gateway en formato Prometheus vía Actuator |
+| micrometer-tracing-bridge-otel                           | Trazas del gateway hacia Jaeger vía OTLP                |
+| springdoc-openapi-starter-webflux-ui                     | Swagger UI agregando la documentación de los servicios  |
 
 **order-service / inventory-service**
 
-| Dependencia                          | Propósito                                                |
-|---------------------------------------|-----------------------------------------------------------|
-| spring-boot-starter-web               | Capa REST sobre Tomcat embebido                            |
-| spring-boot-starter-data-jpa          | Persistencia JPA/Hibernate contra MySQL                    |
-| spring-boot-starter-validation        | Validación de DTOs de entrada (`@Valid`)                    |
-| spring-kafka                          | Producción/consumo de eventos con Apache Kafka              |
-| mysql-connector-j                     | Driver JDBC de MySQL                                       |
-| resilience4j-spring-boot4             | Anotaciones de circuit breaker, retry y timeout             |
-| micrometer-registry-prometheus        | Métricas en formato Prometheus vía Actuator                 |
-| micrometer-tracing-bridge-otel        | Trazas distribuidas hacia Jaeger vía OTLP                   |
-| springdoc-openapi-starter-webmvc-ui   | Swagger UI generado a partir del código                     |
-| spring-kafka-test                     | Utilidades para tests de integración con Kafka embebido     |
+| Dependencia                         | Propósito                                               |
+|-------------------------------------|---------------------------------------------------------|
+| spring-boot-starter-web             | Capa REST sobre Tomcat embebido                         |
+| spring-boot-starter-data-jpa        | Persistencia JPA/Hibernate contra MySQL                 |
+| spring-boot-starter-validation      | Validación de DTOs de entrada (`@Valid`)                |
+| spring-kafka                        | Producción/consumo de eventos con Apache Kafka          |
+| mysql-connector-j                   | Driver JDBC de MySQL                                    |
+| resilience4j-spring-boot4           | Anotaciones de circuit breaker, retry y timeout         |
+| micrometer-registry-prometheus      | Métricas en formato Prometheus vía Actuator             |
+| micrometer-tracing-bridge-otel      | Trazas distribuidas hacia Jaeger vía OTLP               |
+| springdoc-openapi-starter-webmvc-ui | Swagger UI generado a partir del código                 |
+| spring-kafka-test                   | Utilidades para tests de integración con Kafka embebido |
 
 **notification-service**
 
-| Dependencia                          | Propósito                                                |
-|---------------------------------------|-----------------------------------------------------------|
-| spring-boot-starter-web               | Capa REST básica y arranque del servidor embebido           |
-| spring-boot-starter-websocket          | Endpoint STOMP sobre WebSocket para notificaciones push     |
-| spring-kafka                          | Consumo del evento `order-evaluated`                        |
-| resilience4j-spring-boot4             | Resiliencia en el consumidor Kafka                           |
-| micrometer-registry-prometheus        | Métricas en formato Prometheus vía Actuator                 |
-| micrometer-tracing-bridge-otel        | Trazas distribuidas hacia Jaeger vía OTLP                   |
-| springdoc-openapi-starter-webmvc-ui   | Swagger UI generado a partir del código                     |
+| Dependencia                         | Propósito                                               |
+|-------------------------------------|---------------------------------------------------------|
+| spring-boot-starter-web             | Capa REST básica y arranque del servidor embebido       |
+| spring-boot-starter-websocket       | Endpoint STOMP sobre WebSocket para notificaciones push |
+| spring-kafka                        | Consumo del evento `order-evaluated`                    |
+| resilience4j-spring-boot4           | Resiliencia en el consumidor Kafka                      |
+| micrometer-registry-prometheus      | Métricas en formato Prometheus vía Actuator             |
+| micrometer-tracing-bridge-otel      | Trazas distribuidas hacia Jaeger vía OTLP               |
+| springdoc-openapi-starter-webmvc-ui | Swagger UI generado a partir del código                 |
 
 ## Probarlo en local
 
