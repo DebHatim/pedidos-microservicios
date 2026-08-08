@@ -3,6 +3,7 @@ package dev.hatimdebboun.orderservice.order.domain;
 import dev.hatimdebboun.orderservice.order.api.OrderDTO;
 import dev.hatimdebboun.orderservice.order.api.OrderDetailsResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +11,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class OrderService {
 
     private final OrderRepository orderRepository;
@@ -22,9 +24,19 @@ public class OrderService {
         order.setTotal(dto.total());
 
         Order saved = orderRepository.save(order);
+        log.info("Orden {} persistida en BD con estado PENDING", saved.getId());
 
         OrderCreatedEvent event = new OrderCreatedEvent(saved.getId(), mapToEventItems(saved.getItems()));
-        kafkaTemplate.send("order-created", saved.getId().toString(), event);
+
+        kafkaTemplate.send("order-created", saved.getId().toString(), event)
+                .whenComplete((result, ex) -> {
+                    if (ex != null) {
+                        log.error("FALLO al publicar order-created para orderId={}", saved.getId(), ex);
+                    } else {
+                        log.info("order-created publicado OK para orderId={} en partición {}",
+                                saved.getId(), result.getRecordMetadata().partition());
+                    }
+                });
 
         return saved.getId();
     }

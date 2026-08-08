@@ -30,5 +30,5 @@ management:
       endpoint: http://jaeger:4318/v1/traces
 logging:
   level:
-    org.springframework.kafka: DEBUG
+    org.springframework.kafka: INFO
     org.apache.kafka: WARN
