@@ -1,3 +1,8 @@
 package dev.hatimdebboun.inventoryservice.product.api;
 
-public record ReplenishStockRequest(Long stock) {}
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
+public record ReplenishStockRequest(
+        @NotNull @Positive Long stock
+) {}
