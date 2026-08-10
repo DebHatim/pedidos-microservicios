@@ -1,6 +1,7 @@
 package dev.hatimdebboun.inventoryservice.product.api;
 
 import dev.hatimdebboun.inventoryservice.product.domain.ProductService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,7 @@ public class ProductController {
 
     @PostMapping("/{id}/stock")
     public ResponseEntity<ProductResponse> replenishStock(@PathVariable Long id,
-                                                          @RequestBody ReplenishStockRequest request) {
+                                                          @Valid @RequestBody ReplenishStockRequest request) {
         return ResponseEntity.ok(productService.replenishStock(id, request.stock()));
     }
 }
