@@ -1,0 +1,12 @@
+# Configuración de aprovisionamiento automatico de fuentes de datos para Grafana
+apiVersion: 1
+
+datasources:
+  # Define Prometheus como fuente de datos predeterminada
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    # Direccion del servicio Prometheus dentro de la red de Docker Compose
+    url: http://prometheus:9090
+    isDefault: true
+    editable: true
