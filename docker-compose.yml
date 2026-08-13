@@ -124,6 +124,7 @@ services:
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      OTEL_SERVICE_NAME: order-service
     depends_on:
       order-mysql:
         condition: service_healthy
@@ -141,6 +142,7 @@ services:
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      OTEL_SERVICE_NAME: inventory-service
     depends_on:
       inventory-mysql:
         condition: service_healthy
@@ -155,6 +157,7 @@ services:
       - "127.0.0.1:8083:8083"
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      OTEL_SERVICE_NAME: notification-service
     depends_on:
       kafka:
         condition: service_healthy
