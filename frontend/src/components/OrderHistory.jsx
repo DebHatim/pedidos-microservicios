@@ -1,58 +1,58 @@
 import React from 'react'
 import { useOrders } from '../hooks/useOrders.js'
+import StatePanel from './StatePanel.jsx'
 
 export function OrderHistory() {
     const { orders, loading, error, refreshOrders } = useOrders()
 
     if (loading) {
-        return <p>Cargando tu historial de pedidos...</p>
+        return (
+            <StatePanel title="Cargando historial..." text="Obteniendo la lista de tus pedidos recientes."/>
+        )
     }
 
     if (error) {
         return (
-            <div>
-                <p>Hubo un problema: {error}</p>
-                <button onClick={refreshOrders}>Reintentar</button>
-            </div>
+            <StatePanel title="Error al cargar pedidos" text={`Hubo un problema: ${error}`} onRetry={refreshOrders}/>
         )
     }
 
-    if (orders.length === 0) {
-        return <p>Aún no has realizado ningún pedido.</p>
+    if (!orders || orders.length === 0) {
+        return (
+            <StatePanel title="Sin pedidos registrados" text="Aún no has realizado ningún pedido en la tienda."/>
+        )
     }
 
     return (
-        <div className="order-history">
-            <h2>Historial de Pedidos</h2>
+        <div className="order-history-panel">
+            <h2 className="order-history-title">Historial de Pedidos</h2>
 
-            <table style={{ width: '100%', textAlign: 'left', borderCollapse: 'collapse' }}>
-                <thead>
-                <tr style={{ borderBottom: '2px solid #eee' }}>
-                    <th>ID Pedido</th>
-                    <th>Fecha</th>
-                    <th>Estado</th>
-                    <th>Total</th>
-                </tr>
-                </thead>
-                <tbody>
-                {orders.map((order) => {
-                    const dateDisplay = order.date
-                        ? new Date(order.date).toLocaleDateString()
-                        : 'N/A'
-
-                    return (
-                        <tr key={order.id} style={{ borderBottom: '1px solid #eee' }}>
-                            <td style={{ padding: '8px 0' }}>#{order.id}</td>
-                            <td>{dateDisplay}</td>
-                            <td>
-                                <strong>{order.status || 'Desconocido'}</strong>
-                            </td>
-                            <td>${order.total?.toFixed(2)}</td>
-                        </tr>
-                    )
-                })}
-                </tbody>
-            </table>
+            <div className="order-history-table-wrapper">
+                <table className="order-history-table">
+                    <thead>
+                    <tr>
+                        <th>ID Pedido</th>
+                        <th>Estado</th>
+                        <th>Total</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {orders.map((order) => {
+                        return (
+                            <tr key={order.id}>
+                                <td className="order-id">#{order.id}</td>
+                                <td>
+                                        <span className="order-status-badge">
+                                            {order.status || 'Desconocido'}
+                                        </span>
+                                </td>
+                                <td className="order-total">${order.total?.toFixed(2)}</td>
+                            </tr>
+                        )
+                    })}
+                    </tbody>
+                </table>
+            </div>
         </div>
     )
 }

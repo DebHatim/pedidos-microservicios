@@ -10,8 +10,10 @@ import ProductGridSkeleton from './components/ProductGridSkeleton.jsx'
 import StatePanel from './components/StatePanel.jsx'
 import CartButton from './components/CartButton.jsx'
 import CartPanel from './components/CartPanel.jsx'
+import { OrderHistory } from './components/OrderHistory.jsx'
 
 export default function App() {
+    const [activeTab, setActiveTab] = useState('catalog') // 'catalog' | 'orders'
     const [products, setProducts] = useState([])
     const [status, setStatus] = useState('loading') // loading | success | error
     const [selectedCategory, setSelectedCategory] = useState('ALL')
@@ -69,38 +71,47 @@ export default function App() {
         <div className="app-shell">
             <Header />
 
-            {status === 'success' && (
-                <CategoryFilter
-                    categories={categories}
-                    selected={selectedCategory}
-                    onSelect={setSelectedCategory}
-                />
+            {/* Navegacion por pestanas */}
+            <div className="view-navigation">
+                <button className="view-tab" data-active={activeTab === 'catalog'}
+                        onClick={() => setActiveTab('catalog')}>
+                    Catálogo
+                </button>
+                <button className="view-tab" data-active={activeTab === 'orders'}
+                    onClick={() => setActiveTab('orders')}>
+                    Mis Pedidos
+                </button>
+            </div>
+
+            {activeTab === 'catalog' && (
+                <>
+                    {status === 'success' && (
+                        <CategoryFilter categories={categories} selected={selectedCategory} onSelect={setSelectedCategory}/>
+                    )}
+
+                    {status === 'loading' && <ProductGridSkeleton />}
+
+                    {status === 'error' && (
+                        <StatePanel title="No se ha podido cargar el catálogo"
+                                    text="Hubo un error comunicando con el servidor, intentelo de nuevo."
+                                    onRetry={() => setReloadKey((key) => key + 1)}
+                        />
+                    )}
+
+                    {status === 'success' && visibleProducts.length === 0 && (
+                        <StatePanel title="Sin productos en esta categoría"
+                                    text="Prueba a seleccionar otra categoría o vuelve a ver el catálogo completo."
+                        />
+                    )}
+
+                    {status === 'success' && visibleProducts.length > 0 && (
+                        <ProductGrid products={visibleProducts} cartQuantities={cartQuantities}
+                                     onAddToCart={cart.addToCart}/>
+                    )}
+                </>
             )}
 
-            {status === 'loading' && <ProductGridSkeleton />}
-
-            {status === 'error' && (
-                <StatePanel
-                    title="No se ha podido cargar el catálogo"
-                    text="Hubo un error comunicando con el servidor, intentelo de nuevo."
-                    onRetry={() => setReloadKey((key) => key + 1)}
-                />
-            )}
-
-            {status === 'success' && visibleProducts.length === 0 && (
-                <StatePanel
-                    title="Sin productos en esta categoría"
-                    text="Prueba a seleccionar otra categoría o vuelve a ver el catálogo completo."
-                />
-            )}
-
-            {status === 'success' && visibleProducts.length > 0 && (
-                <ProductGrid
-                    products={visibleProducts}
-                    cartQuantities={cartQuantities}
-                    onAddToCart={cart.addToCart}
-                />
-            )}
+            {activeTab === 'orders' && <OrderHistory />}
 
             <CartButton itemCount={cart.itemCount} onClick={() => cart.setIsOpen(true)} />
 
