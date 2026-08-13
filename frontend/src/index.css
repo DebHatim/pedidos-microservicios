@@ -35,7 +35,7 @@ html, body {
 body {
     background: var(--color-bg);
     color: var(--color-ink);
-    font-family: var(--font-body);
+    font-family: var(--font-body), sans-serif;
     -webkit-font-smoothing: antialiased;
 }
 
@@ -71,7 +71,7 @@ button {
 }
 
 .site-header__eyebrow {
-    font-family: var(--font-mono);
+    font-family: var(--font-mono), monospace;
     font-size: 12px;
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -80,7 +80,7 @@ button {
 }
 
 .site-header__title {
-    font-family: var(--font-display);
+    font-family: var(--font-display), serif;
     font-optical-sizing: auto;
     font-weight: 600;
     font-size: clamp(2.1rem, 4vw, 3rem);
@@ -108,7 +108,7 @@ button {
 }
 
 .category-filter__label {
-    font-family: var(--font-mono);
+    font-family: var(--font-mono), monospace;
     font-size: 11px;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -141,7 +141,7 @@ button {
 }
 
 .pill__count {
-    font-family: var(--font-mono);
+    font-family: var(--font-mono), monospace;
     font-size: 11px;
     opacity: 0.7;
 }
@@ -189,7 +189,7 @@ button {
     left: 12px;
     background: rgba(253, 246, 236, 0.92);
     color: var(--color-sage-deep);
-    font-family: var(--font-mono);
+    font-family: var(--font-mono), monospace;
     font-size: 10.5px;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -207,7 +207,7 @@ button {
 }
 
 .product-card__name {
-    font-family: var(--font-display);
+    font-family: var(--font-display), serif;
     font-weight: 600;
     font-size: 18px;
     line-height: 1.25;
@@ -235,7 +235,7 @@ button {
 }
 
 .product-card__price {
-    font-family: var(--font-mono);
+    font-family: var(--font-mono), monospace;
     font-size: 17px;
     font-weight: 500;
     color: var(--color-sage-deep);
@@ -246,7 +246,7 @@ button {
 }
 
 .stock-gauge__label {
-    font-family: var(--font-mono);
+    font-family: var(--font-mono), monospace;
     font-size: 10.5px;
     color: var(--color-ink-soft);
     margin-bottom: 4px;
@@ -293,7 +293,7 @@ button {
 }
 
 .state-panel__title {
-    font-family: var(--font-display);
+    font-family: var(--font-display), serif;
     font-size: 22px;
     color: var(--color-sage-deep);
     margin: 0 0 8px;
@@ -428,7 +428,7 @@ button {
 .cart-button__badge {
     background: var(--color-bg-elevated);
     color: var(--color-sage-deep);
-    font-family: var(--font-mono);
+    font-family: var(--font-mono), monospace;
     font-size: 11.5px;
     font-weight: 600;
     min-width: 20px;
@@ -473,7 +473,7 @@ button {
 }
 
 .cart-panel__header h2 {
-    font-family: var(--font-display);
+    font-family: var(--font-display), serif;
     font-size: 22px;
     color: var(--color-sage-deep);
     margin: 0;
@@ -546,7 +546,7 @@ button {
 }
 
 .cart-row__unit-price {
-    font-family: var(--font-mono);
+    font-family: var(--font-mono), monospace;
     font-size: 11.5px;
     color: var(--color-ink-soft);
     margin: 0;
@@ -591,7 +591,7 @@ button {
 .qty-stepper span {
     min-width: 22px;
     text-align: center;
-    font-family: var(--font-mono);
+    font-family: var(--font-mono), monospace;
     font-size: 12.5px;
 }
 
@@ -617,7 +617,7 @@ button {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    font-family: var(--font-mono);
+    font-family: var(--font-mono), monospace;
     font-size: 15px;
     color: var(--color-ink);
     margin-bottom: 14px;
@@ -661,7 +661,7 @@ button {
 }
 
 .cart-result__title {
-    font-family: var(--font-display);
+    font-family: var(--font-display), serif;
     font-size: 18px;
     color: var(--color-sage-deep);
     margin: 0 0 8px;
@@ -754,7 +754,7 @@ button {
 .view-tab {
     background: transparent;
     border: none;
-    font-family: var(--font-display);
+    font-family: var(--font-display), serif;
     font-size: 18px;
     font-weight: 500;
     color: var(--color-ink-soft);
@@ -783,7 +783,7 @@ button {
 }
 
 .order-history-title {
-    font-family: var(--font-display);
+    font-family: var(--font-display), serif;
     font-size: 22px;
     color: var(--color-sage-deep);
     margin: 0 0 20px;
@@ -801,7 +801,7 @@ button {
 }
 
 .order-history-table th {
-    font-family: var(--font-mono);
+    font-family: var(--font-mono), monospace;
     font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -821,12 +821,12 @@ button {
 }
 
 .order-id {
-    font-family: var(--font-mono);
+    font-family: var(--font-mono), monospace;
     font-weight: 500;
 }
 
 .order-total {
-    font-family: var(--font-mono);
+    font-family: var(--font-mono), monospace;
     font-weight: 600;
     color: var(--color-sage-deep);
 }
@@ -837,7 +837,7 @@ button {
     border-radius: 999px;
     background: var(--color-sage-tint);
     color: var(--color-sage-deep);
-    font-family: var(--font-mono);
+    font-family: var(--font-mono), monospace;
     font-size: 11.5px;
     font-weight: 500;
 }
