@@ -1,6 +1,7 @@
 package dev.hatimdebboun.inventoryservice.shared.exception;
 
 import dev.hatimdebboun.inventoryservice.product.domain.ProductNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -11,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ProductNotFoundException.class)
@@ -30,7 +32,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, String>> handleException() {
+    public ResponseEntity<Map<String, String>> handleException(Exception ex) {
+        log.error("Error inesperado no controlado", ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "An unexpected error occurred"));
     }
 }
