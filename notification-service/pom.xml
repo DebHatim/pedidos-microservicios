@@ -18,7 +18,7 @@
 
 	<dependencyManagement>
 		<dependencies>
-			<!-- BOM de Testcontainers que garantiza alineacion total de versiones sin conflictos -->
+			<!-- Testcontainers BOM that guarantees total version alignment without conflicts -->
 			<dependency>
 				<groupId>org.testcontainers</groupId>
 				<artifactId>testcontainers-bom</artifactId>
@@ -55,13 +55,13 @@
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
-		<!-- Dependencia Testing -->
+		<!-- Testing dependency -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!-- Dependencias Extra -->
+		<!-- Extra dependencies -->
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
@@ -88,7 +88,7 @@
 			<groupId>io.opentelemetry</groupId>
 			<artifactId>opentelemetry-exporter-otlp</artifactId>
 		</dependency>
-		<!-- Dependencias Testcontainers -->
+		<!-- Testcontainers dependencies -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-testcontainers</artifactId>

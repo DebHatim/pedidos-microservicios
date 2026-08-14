@@ -16,14 +16,14 @@ public class ProductDataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        // Comprobar que este vacio antes de ejecutar
+        // Check that this is empty before running
         if (!productRepository.findAll().isEmpty()) {
             return;
         }
 
         productRepository.save(new Product(null,
                 "PlayStation 5 Pro",
-                "Consola de nueva generación con soporte para ray tracing y resolución 8K.",
+                "Next-generation console with ray tracing support and 8K resolution.",
                 new BigDecimal("799.99"),
                 "Gaming",
                 15L,
@@ -31,7 +31,7 @@ public class ProductDataLoader implements CommandLineRunner {
 
         productRepository.save(new Product(null,
                 "iPhone 15 Pro Max",
-                "Smartphone con chip A17 Pro, cámara de 48MP y pantalla ProMotion de 120Hz.",
+                "Smartphone with A17 Pro chip, 48MP camera, and 120Hz ProMotion display.",
                 new BigDecimal("1219.00"),
                 "Smartphones",
                 22L,
@@ -39,7 +39,7 @@ public class ProductDataLoader implements CommandLineRunner {
 
         productRepository.save(new Product(null,
                 "Nintendo Switch 2",
-                "Consola híbrida con pantalla OLED de 8 pulgadas y Joy-Con magnéticos.",
+                "Hybrid console with an 8-inch OLED display and magnetic Joy-Cons.",
                 new BigDecimal("449.50"),
                 "Gaming",
                 30L,
@@ -47,7 +47,7 @@ public class ProductDataLoader implements CommandLineRunner {
 
         productRepository.save(new Product(null,
                 "MacBook Pro 14\" M4",
-                "Portátil profesional con chip M4, 16GB de RAM unificada y pantalla Liquid Retina XDR.",
+                "Professional laptop with M4 chip, 16GB unified memory, and Liquid Retina XDR display.",
                 new BigDecimal("2199.00"),
                 "Laptops",
                 8L,
@@ -55,7 +55,7 @@ public class ProductDataLoader implements CommandLineRunner {
 
         productRepository.save(new Product(null,
                 "Sony WH-1000XM6",
-                "Auriculares inalámbricos con cancelación de ruido líder en su categoría.",
+                "Wireless headphones with class-leading noise cancellation.",
                 new BigDecimal("399.99"),
                 "Audio",
                 40L,
@@ -63,7 +63,7 @@ public class ProductDataLoader implements CommandLineRunner {
 
         productRepository.save(new Product(null,
                 "Samsung Galaxy S25 Ultra",
-                "Smartphone con S Pen integrado, cámara de 200MP y pantalla Dynamic AMOLED 2X.",
+                "Smartphone with built-in S Pen, 200MP camera, and Dynamic AMOLED 2X display.",
                 new BigDecimal("1349.00"),
                 "Smartphones",
                 18L,
@@ -71,7 +71,7 @@ public class ProductDataLoader implements CommandLineRunner {
 
         productRepository.save(new Product(null,
                 "LG OLED C5 55\"",
-                "Televisor OLED 4K con procesador de IA y soporte para Dolby Vision.",
+                "4K OLED TV with AI processor and Dolby Vision support.",
                 new BigDecimal("1599.00"),
                 "TV & Home",
                 6L,
@@ -79,7 +79,7 @@ public class ProductDataLoader implements CommandLineRunner {
 
         productRepository.save(new Product(null,
                 "DJI Mavic 4 Pro",
-                "Dron con cámara Hasselblad, sensor triple y hasta 45 minutos de autonomía.",
+                "Drone with Hasselblad camera, triple sensor system, and up to 45 minutes of battery life.",
                 new BigDecimal("2399.00"),
                 "Drones",
                 5L,
@@ -87,17 +87,17 @@ public class ProductDataLoader implements CommandLineRunner {
 
         productRepository.save(new Product(null,
                 "Logitech MX Master 4",
-                "Ratón inalámbrico ergonómico con scroll magnético y multi-dispositivo.",
+                "Ergonomic wireless mouse with magnetic scroll wheel and multi-device support.",
                 new BigDecimal("119.99"),
-                "Accesorios",
+                "Accessories",
                 50L,
                 "https://picsum.photos/seed/mxmaster4/500/500"));
 
         productRepository.save(new Product(null,
                 "Kindle Oasis 2026",
-                "E-reader con pantalla de 7 pulgadas, luz ajustable y resistencia al agua.",
+                "E-reader featuring a 7-inch display, adjustable warm light, and water resistance.",
                 new BigDecimal("279.99"),
-                "Lectura",
+                "Reading",
                 25L,
                 "https://picsum.photos/seed/kindleoasis2026/500/500"));
     }

@@ -7,12 +7,12 @@ function getStockLevel(stock) {
 }
 
 function getStockLabel(stock, level) {
-    if (level === 'out') return 'Sin stock'
-    if (level === 'low') return `Últimas ${stock} unidades`
-    return `${stock} unidades`
+    if (level === 'out') return 'Out of stock'
+    if (level === 'low') return `Only ${stock} left`
+    return `${stock} units`
 }
 
-const currencyFormatter = new Intl.NumberFormat('es-ES', {
+const currencyFormatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'EUR'
 })
@@ -58,12 +58,12 @@ export default function ProductCard({ product, quantityInCart = 0, onAdd }) {
                     disabled={isOutOfStock || atCartLimit}
                 >
                     {isOutOfStock
-                        ? 'Sin stock'
+                        ? 'Out of stock'
                         : atCartLimit
-                            ? 'Stock máximo en el pedido'
+                            ? 'Max stock in order'
                             : quantityInCart > 0
-                                ? `Añadir otra (${quantityInCart} en el pedido)`
-                                : 'Añadir al pedido'}
+                                ? `Add another (${quantityInCart} in order)`
+                                : 'Add to order'}
                 </button>
             </div>
         </article>

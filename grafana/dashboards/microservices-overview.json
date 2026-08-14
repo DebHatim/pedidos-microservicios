@@ -8,8 +8,8 @@
   "liveNow": false,
   "panels": [
     {
-      "title": "Peticiones HTTP por segundo (req/s)",
-      "description": "Mide el rendimiento de solicitudes HTTP procesadas agrupadas por microservicio y código de estado",
+      "title": "HTTP Requests per Second (req/s)",
+      "description": "Measures the throughput of processed HTTP requests grouped by microservice and status code",
       "type": "timeseries",
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
       "targets": [
@@ -21,8 +21,8 @@
       ]
     },
     {
-      "title": "Uso de Memoria JVM (Heap)",
-      "description": "Muestra el consumo de memoria Heap de la máquina virtual de Java expuesto por Spring Boot Actuator",
+      "title": "JVM Memory Usage (Heap)",
+      "description": "Shows Heap memory consumption of the Java Virtual Machine exposed by Spring Boot Actuator",
       "type": "timeseries",
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
       "fieldConfig": {
@@ -38,7 +38,7 @@
     },
     {
       "title": "Kafka Consumer Lag",
-      "description": "Monitorea el retraso en el procesamiento de mensajes de los consumidores de Kafka",
+      "description": "Monitors message processing lag for Kafka consumers",
       "type": "timeseries",
       "gridPos": { "h": 8, "w": 24, "x": 0, "y": 8 },
       "targets": [

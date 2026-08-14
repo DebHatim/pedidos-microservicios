@@ -7,7 +7,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 
-// Getter y Setter en vez de data para limitar equals, hashcode y toString
+// Getter and Setter instead of data to limit equals, hashcode and toString
 @Getter
 @Setter
 @NoArgsConstructor

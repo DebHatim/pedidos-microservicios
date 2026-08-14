@@ -2,7 +2,7 @@ import {useEffect, useMemo, useRef, useState} from 'react'
 import {createOrder, getOrder} from '../api.js'
 import {createStompClient} from "../ws.js";
 
-// El carrito vive como Map<productId, { product, quantity }>
+// The cart lives as Map<productId, { product, quantity }>
 export function useCart() {
     const [items, setItems] = useState(new Map())
     const [isOpen, setIsOpen] = useState(false)
@@ -11,7 +11,7 @@ export function useCart() {
 
     const pendingOrderIdRef = useRef(null)
 
-    // Conexion STOMP unica para toda la sesion, se suscribe a las notificaciones de los pedidos
+    // Single STOMP connection for the entire session, subscribes to order notifications
     useEffect(() => {
         const client = createStompClient(() => {
             client.subscribe('/topic/notifications', (message) => {
@@ -19,17 +19,17 @@ export function useCart() {
 
                 if (notification.orderId !== pendingOrderIdRef.current) return
 
-                const isConfirmed = notification.message.toLowerCase().includes('confirmado')
+                const isConfirmed = notification.message.toLowerCase().includes('confirmed')
                 setSubmitStatus(isConfirmed ? 'confirmed' : 'rejected')
                 setResultMessage(notification.message)
                 pendingOrderIdRef.current = null
             })
         })
 
-        client.onWebSocketClose = (event) => {
+        client.onWebSocketClose = () => {
             if (pendingOrderIdRef.current) {
                 setSubmitStatus('error')
-                setResultMessage('Se perdió la conexión con el servidor. No pudimos confirmar el pedido.')
+                setResultMessage('The connection to the server was lost. We were unable to confirm the order.')
                 pendingOrderIdRef.current = null
             }
         }
@@ -39,18 +39,18 @@ export function useCart() {
         }
     }, []);
 
-    // useEffect para el fallback
+    // useEffect for the fallback
     useEffect(() => {
-        // Si no estamos esperando un pedido, no hacemos nada
+        // If we're not expecting an order, we don't do anything.
         if (submitStatus !== 'waiting' || !pendingOrderIdRef.current) return;
 
         let pollInterval;
 
-        // Lanzamos un temporizador de 8 segundos
+        // We start an 8-second timer
         const timeoutId = setTimeout(() => {
-            console.log('STOMP tardando mucho, iniciando polling...');
+            console.log('STOMP taking a long time, starting polling...');
 
-            // Cuando terminen los 8s, lanzamos el setInterval cada 3s
+            // When the 8s are finished, we launch the setInterval every 3s
             pollInterval = setInterval(async () => {
                 try {
                     const orderId = pendingOrderIdRef.current;
@@ -59,22 +59,22 @@ export function useCart() {
                         return;
                     }
 
-                    // Hacemos GET al backend
+                    // We make a GET request to the backend
                     const order = await getOrder(orderId);
 
-                    // Si el estado ya no es PENDING, actualizamos el estado y limpiamos el polling
+                    // If the status is no longer PENDING, we update the status and clear the polling.
                     if (order.status !== 'PENDING') {
                         const isConfirmed = order.status === 'CONFIRMED';
 
                         setSubmitStatus(isConfirmed ? 'confirmed' : 'rejected');
-                        setResultMessage(`Pedido ${isConfirmed ? 'confirmado' : 'rechazado'}`);
+                        setResultMessage(`Order ${isConfirmed ? 'confirmed' : 'rejected'}`);
                         pendingOrderIdRef.current = null;
 
                         clearInterval(pollInterval);
                     }
                 } catch (error) {
-                    console.error("Error durante el polling:", error);
-                    // setSubmitStatus('error') si falla
+                    console.error("Error during polling:", error);
+                    // setSubmitStatus('error') if fails
                 }
             }, 3000);
 
@@ -83,7 +83,7 @@ export function useCart() {
         return () => {
             clearTimeout(timeoutId);
             if (pollInterval) {
-                clearInterval(pollInterval); // Cancelar el polling
+                clearInterval(pollInterval); // Cancel polling
             }
         };
     }, [submitStatus]);

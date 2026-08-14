@@ -71,7 +71,7 @@ export default function App() {
         <div className="app-shell">
             <Header />
 
-            {/* Navegacion por pestanas */}
+            {/* Tab navigation */}
             <div className="view-navigation">
                 <button className="view-tab" data-active={activeTab === 'catalog'}
                         onClick={() => setActiveTab('catalog')}>
@@ -92,15 +92,15 @@ export default function App() {
                     {status === 'loading' && <ProductGridSkeleton />}
 
                     {status === 'error' && (
-                        <StatePanel title="No se ha podido cargar el catálogo"
-                                    text="Hubo un error comunicando con el servidor, intentelo de nuevo."
+                        <StatePanel title="The catalog could not be loaded"
+                                    text="There was an error communicating with the server, please try again."
                                     onRetry={() => setReloadKey((key) => key + 1)}
                         />
                     )}
 
                     {status === 'success' && visibleProducts.length === 0 && (
-                        <StatePanel title="Sin productos en esta categoría"
-                                    text="Prueba a seleccionar otra categoría o vuelve a ver el catálogo completo."
+                        <StatePanel title="No products in this category"
+                                    text="Try selecting another category or view the full catalog again."
                         />
                     )}
 

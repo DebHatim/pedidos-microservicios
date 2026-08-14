@@ -19,7 +19,7 @@
 
 	<dependencyManagement>
 		<dependencies>
-			<!-- BOM de Testcontainers que garantiza alineacion total de versiones sin conflictos -->
+			<!-- Testcontainers BOM that guarantees total version alignment without conflicts -->
 			<dependency>
 				<groupId>org.testcontainers</groupId>
 				<artifactId>testcontainers-bom</artifactId>
@@ -27,7 +27,7 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
-			<!-- BOM de Spring Cloud -->
+			<!-- Spring Cloud BOM -->
 			<dependency>
 				<groupId>org.springframework.cloud</groupId>
 				<artifactId>spring-cloud-dependencies</artifactId>
@@ -39,12 +39,12 @@
 	</dependencyManagement>
 
 	<dependencies>
-		<!-- Stack Reactive/Webflux -->
+		<!-- Reactive/Webflux Stack -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webflux</artifactId>
 		</dependency>
-		<!-- Starters Spring Cloud Gateway -->
+		<!-- Spring Cloud Gateway Starters -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-gateway-server-webflux</artifactId>
@@ -53,7 +53,7 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-circuitbreaker-reactor-resilience4j</artifactId>
 		</dependency>
-		<!-- Dependencias iniciales -->
+		<!-- Initial dependencies -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
@@ -67,13 +67,13 @@
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
-		<!-- Dependencia Testing -->
+		<!-- Testing dependency -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!-- Dependencias Extra -->
+		<!-- Extra dependencies -->
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
@@ -95,12 +95,12 @@
 			<groupId>io.opentelemetry</groupId>
 			<artifactId>opentelemetry-exporter-otlp</artifactId>
 		</dependency>
-		<!-- Redis Reactivo para Rate Limiting en Spring Cloud Gateway -->
+		<!-- Reactive Redis for Rate Limiting on Spring Cloud Gateway -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-redis-reactive</artifactId>
 		</dependency>
-		<!-- Dependencias Testcontainers -->
+		<!-- Testcontainers dependencies -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-testcontainers</artifactId>

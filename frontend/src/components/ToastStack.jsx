@@ -10,7 +10,7 @@ export default function ToastStack({ toasts, onDismiss }) {
                         type="button"
                         className="toast__close"
                         onClick={() => onDismiss(toast.id)}
-                        aria-label="Cerrar notificación"
+                        aria-label="Close notification"
                     >
                         ×
                     </button>

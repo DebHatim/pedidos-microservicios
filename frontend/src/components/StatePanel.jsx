@@ -5,7 +5,7 @@ export default function StatePanel({ title, text, onRetry }) {
             <p className="state-panel__text">{text}</p>
             {onRetry && (
                 <button type="button" className="state-panel__retry" onClick={onRetry}>
-                    Reintentar
+                    Retry
                 </button>
             )}
         </div>

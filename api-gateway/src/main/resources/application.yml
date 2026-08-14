@@ -1,19 +1,19 @@
-# Puerto del servidor
+# Server port
 server:
   port: 8080
 
-# Nombre de la aplicacion
+# Application name
 spring:
   application:
     name: api-gateway
-  # Configuracion timeouts para el cliente HTTP del gateway
+  # Configuring timeouts for the gateway's HTTP client
   cloud:
     gateway:
       httpclient:
         connect-timeout: 2000
         response-timeout: 5s
 
-      # Configuracion WebFlux para CORS y rutas
+      # WebFlux configuration for CORS and routes
       server:
         webflux:
           globalcors:
@@ -33,9 +33,9 @@ spring:
                   - "*"
                 allowCredentials: true
 
-          # Configuracion de rutas para los microservicios
+          # Configuration of routes for microservices
           routes:
-            # Microservicio Pedidos
+            # Orders microservice
             - id: order-service-route
               uri: http://order-service:8081
               predicates:
@@ -44,13 +44,13 @@ spring:
                 connect-timeout: 1000
                 response-timeout: 5000
               filters:
-                # Filtro de limitacion con Rate Limiting
+                # Rate Limiting Filter
                 - name: RequestRateLimiter
                   args:
                     redis-rate-limiter.replenishRate: 10
                     redis-rate-limiter.burstCapacity: 20
                     key-resolver: "#{@ipKeyResolver}"
-                # Filtro de reintentos con Retry
+                # Retry filter with Retry
                 - name: Retry
                   args:
                     retries: 3
@@ -61,13 +61,13 @@ spring:
                       maxBackoff: 500ms
                       factor: 2
                       basedOnPreviousValue: true
-                # Filtro de Circuit Breaker para manejar fallos en el microservicio
+                # Circuit Breaker filter to handle faults in the microservice
                 - name: CircuitBreaker
                   args:
                     name: orderServiceCircuitBreaker
                     fallbackUri: forward:/fallback/orders
 
-            # Microservicio Inventario
+            # Inventory microservice
             - id: inventory-service-route
               uri: http://inventory-service:8082
               predicates:
@@ -76,36 +76,36 @@ spring:
                 connect-timeout: 1000
                 response-timeout: 3000
               filters:
-                # Filtro de limitacion con Rate Limiting
+                # Rate Limiting Filter
                 - name: RequestRateLimiter
                   args:
                     redis-rate-limiter.replenishRate: 10
                     redis-rate-limiter.burstCapacity: 20
                     key-resolver: "#{@ipKeyResolver}"
-                # Filtro de reintentos con Retry
+                # Retry filter with Retry
                 - name: Retry
                   args:
                     retries: 3
                     statuses: BAD_GATEWAY, SERVICE_UNAVAILABLE, GATEWAY_TIMEOUT
                     methods: GET
-                # Filtro de Circuit Breaker para manejar fallos en el microservicio
+                # Circuit Breaker filter to handle faults in the microservice
                 - name: CircuitBreaker
                   args:
                     name: inventoryServiceCircuitBreaker
                     fallbackUri: forward:/fallback/inventory
 
-            # Microservicio Notificaciones
+            # Notifications microservice (WebSocket)
             - id: notification-service-ws-route
               uri: ws://notification-service:8083
               predicates:
                 - Path=/ws/**,/ws
 
-# Configuracion metricas y trazas
+# Metrics and trace configuration
 management:
   endpoints:
     web:
       exposure:
-        # Exponemos los endpoints vitales para Prometheus y health checks
+        # We expose the vital endpoints for Prometheus and health checks
         include: health, metrics, prometheus
   endpoint:
     health:
@@ -113,22 +113,22 @@ management:
 
   tracing:
     sampling:
-      probability: 1.0 # 1.0 = Envía el 100% de las trazas (ideal para desarrollo/demo)
+      probability: 1.0 # 1.0 = Sends 100% of traces (ideal for development/demo)
 
   otlp:
     tracing:
-      # URL de Jaeger en la red de Docker Compose usando el puerto HTTP OTLP
+      # Jaeger URL on the Docker Compose network using the HTTP OTLP port
       endpoint: http://jaeger:4318/v1/traces
   metrics:
     export:
       otlp:
-        enabled: false # Desactivamos métricas por OTLP si usas Prometheus, para evitar conflictos
+        enabled: false # We disable OTLP metrics if you use Prometheus, to avoid conflicts
   opentelemetry:
     exporter:
       otlp:
         enabled: true
-# Configuracion de Resilience4j para Circuit Breaker que permite manejar fallos en los microservicios y mejorar la
-# resiliencia del sistema
+# Resilience4j configuration for Circuit Breaker that allows handling microservice failures and
+# improving system resilience
 resilience4j:
   circuitbreaker:
     instances:

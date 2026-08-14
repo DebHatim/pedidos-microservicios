@@ -1,5 +1,5 @@
-# Prometheus pide metricas cada 5 segundos a cada microservicio
-# Cada microservicio expone sus metricas en el endpoint /actuator/prometheus
+# Prometheus requests metrics every 5 seconds from each microservice
+# Each microservice exposes its metrics on the /actuator/prometheus endpoint
 global:
   scrape_interval: 5s
 

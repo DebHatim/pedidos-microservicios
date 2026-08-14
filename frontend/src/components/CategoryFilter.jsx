@@ -1,7 +1,7 @@
 export default function CategoryFilter({ categories, selected, onSelect }) {
     return (
-        <div className="category-filter" role="group" aria-label="Filtrar por categoría">
-            <span className="category-filter__label">Categoría</span>
+        <div className="category-filter" role="group" aria-label="Filter by category">
+            <span className="category-filter__label">Category</span>
 
             <button
                 type="button"
@@ -10,7 +10,7 @@ export default function CategoryFilter({ categories, selected, onSelect }) {
                 aria-pressed={selected === 'ALL'}
                 onClick={() => onSelect('ALL')}
             >
-                Todos
+                All
                 <span className="pill__count">{categories.total}</span>
             </button>
 

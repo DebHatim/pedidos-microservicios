@@ -17,14 +17,14 @@ public class OrderEvaluatedListener {
 
     @KafkaListener(topics = "order-evaluated", groupId = "notification-group", containerFactory = "kafkaListenerContainerFactory")
     public void handle(OrderEvaluatedEvent event) {
-        log.info("Notification-service recibió order-evaluated: orderId={}, status={}", event.orderId(), event.status());
+        log.info("Notification-service received order-evaluated: orderId={}, status={}", event.orderId(), event.status());
         String message = "CONFIRMED".equals(event.status())
-                ? "Tu pedido se ha confirmado correctamente. (Stock disponible)"
-                : "Tu pedido no se ha completado. (Sin stock disponible)";
+                ? "Your order has been successfully confirmed. (Stock available)"
+                : "Your order has not been completed. (Out of stock)";
 
         messagingTemplate.convertAndSend("/topic/notifications",
                 new NotificationMessage(event.orderId(), message)
         );
-        log.info("Mensaje WebSocket enviado a /topic/notifications para orderId={}", event.orderId());
+        log.info("WebSocket message sent to /topic/notifications for orderId={}", event.orderId());
     }
 }

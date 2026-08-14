@@ -41,7 +41,7 @@ public class KafkaConfig {
         return new KafkaTemplate<>(producerFactory());
     }
 
-    // Error handler por si falla el listener
+    // Error handler in case the listener fails
     @Bean
     public DefaultErrorHandler errorHandler(KafkaTemplate<String, Object> template) {
         return new DefaultErrorHandler(

@@ -14,7 +14,7 @@ public class OrderCreatedListener {
 
     @KafkaListener(topics = "order-created", groupId = "inventory-group")
     public void handle(OrderCreatedEvent event) {
-        log.info("Evento order-created recibido: orderId={}, items={}", event.orderId(), event.items().size());
+        log.info("Received order-created event: orderId={}, items={}", event.orderId(), event.items().size());
         stockReservationService.evaluateOrder(event);
     }
 }

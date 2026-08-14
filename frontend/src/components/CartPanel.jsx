@@ -1,6 +1,6 @@
 import CartRow from './CartRow.jsx'
 
-const currencyFormatter = new Intl.NumberFormat('es-ES', {
+const currencyFormatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'EUR'
 })
@@ -28,46 +28,46 @@ export default function CartPanel({
         <>
             <div className="cart-backdrop" onClick={onClose}/>
 
-            <aside className="cart-panel" role="dialog" aria-label="Carrito de pedido">
+            <aside className="cart-panel" role="dialog" aria-label="Order cart">
                 <div className="cart-panel__header">
-                    <h2>Tu pedido</h2>
-                    <button type="button" className="cart-panel__close" onClick={onClose} aria-label="Cerrar carrito">
+                    <h2>Your order</h2>
+                    <button type="button" className="cart-panel__close" onClick={onClose} aria-label="Close cart">
                         ×
                     </button>
                 </div>
 
                 {submitStatus === 'waiting' && (
                     <div className="cart-result cart-result--success">
-                        <p className="cart-result__title">Pedido enviado</p>
+                        <p className="cart-result__title">Order sent</p>
                         <p className="cart-result__text">
-                            Se está comprobando el stock disponible. Recibirás la confirmación en tiempo real
-                            en cuanto inventory-service procese el pedido.
+                            Checking available stock. You will receive real-time confirmation
+                            as soon as inventory-service processes your order.
                         </p>
                     </div>
                 )}
 
                 {submitStatus === 'confirmed' && (
                     <div className="cart-result cart-result--success">
-                        <p className="cart-result__title">Pedido confirmado</p>
+                        <p className="cart-result__title">Order confirmed</p>
                         <p className="cart-result__text">{resultMessage}</p>
                         <button type="button" className="state-panel__retry" onClick={onDismissResult}>
-                            Seguir comprando
+                            Continue shopping
                         </button>
                     </div>
                 )}
 
                 {submitStatus === 'rejected' && (
                     <div className="cart-result" style={{ background: '#F7E6E1', border: '1px solid var(--color-out-stock)' }}>
-                        <p className="cart-result__title" style={{ color: 'var(--color-out-stock)' }}>Pedido rechazado</p>
+                        <p className="cart-result__title" style={{ color: 'var(--color-out-stock)' }}>Order rejected</p>
                         <p className="cart-result__text">{resultMessage}</p>
                         <button type="button" className="state-panel__retry" onClick={onDismissResult}>
-                            Seguir comprando
+                            Continue shopping
                         </button>
                     </div>
                 )}
 
                 {!isFinalResult && isEmpty && (
-                    <p className="cart-panel__empty">Todavía no has añadido ningún producto.</p>
+                    <p className="cart-panel__empty">You haven't added any products yet.</p>
                 )}
 
                 {!isFinalResult && !isEmpty && (
@@ -86,7 +86,7 @@ export default function CartPanel({
 
                         {submitStatus === 'error' && (
                             <p className="cart-panel__error">
-                                No se ha podido enviar el pedido. Comprueba la conexión e inténtalo de nuevo.
+                                Failed to submit order. Please check your connection and try again.
                             </p>
                         )}
 
@@ -101,7 +101,7 @@ export default function CartPanel({
                                 onClick={onSubmit}
                                 disabled={isSubmitting}
                             >
-                                {isSubmitting ? 'Enviando pedido…' : 'Confirmar pedido'}
+                                {isSubmitting ? 'Submitting order…' : 'Confirm order'}
                             </button>
                         </div>
                     </>

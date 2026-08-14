@@ -1,17 +1,17 @@
-# Configuracion del proveedor de dashboards para Grafana
+# Configuring the dashboard provider for Grafana
 apiVersion: 1
 
 providers:
-  # Proveedor encargado de escanear la carpeta interna del contenedor de Grafana para cargar los dashboards
+  # Provider responsible for scanning the internal folder of the Grafana container to load the dashboards
   - name: 'Microservicios'
     orgId: 1
     folder: ''
     type: file
     disableDeletion:
-    # Frecuencia en segundos con la que Grafana escanea la carpeta de dashboards para detectar cambios
-    # y actualizar los dashboards en caso de que se modifiquen
+    # Frequency in seconds that Grafana scans the dashboards folder to detect changes
+    # and updates the dashboards if they are modified
     updateIntervalSeconds: 10
     allowUiUpdates: true
     options:
-      # Ruta interna donde se montaran los archivos .json desde el volumen de Docker Compose
+      # Internal path where the .json files will be mounted from the Docker Compose volume
       path: /var/lib/grafana/dashboards

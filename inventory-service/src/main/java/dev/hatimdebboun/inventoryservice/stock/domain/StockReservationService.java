@@ -11,17 +11,17 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-// Evalua si un pedido puede confirmarse segun el stock disponible
+// Evaluates whether an order can be confirmed based on available stock
 public class StockReservationService {
 
     private final ProductRepository productRepository;
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
-    // Metodo para verificar la existencia del producto y si tiene stock disponible
+    // Method to verify product existence and availability
     public void evaluateOrder(OrderCreatedEvent event) {
         try {
             boolean hasEnoughStock = event.items().stream().allMatch(this::hasEnoughStock);
-            log.info("Orden {} - stock suficiente: {}", event.orderId(), hasEnoughStock);
+            log.info("Order {} - enough stock: {}", event.orderId(), hasEnoughStock);
 
             if (hasEnoughStock) {
                 event.items().forEach(this::reduceStock);
@@ -31,19 +31,19 @@ public class StockReservationService {
                 publish(event.orderId(), "REJECTED");
             }
         } catch (ProductNotFoundException e) {
-            log.error("Orden {} rechazada: producto no encontrado - {}", event.orderId(), e.getMessage());
+            log.error("Order {} rejected: product not found - {}", event.orderId(), e.getMessage());
             publish(event.orderId(), "REJECTED");
         }
     }
 
-    // Metodo que valida que el producto exista y que tenga stock suficiente para la cantidad solicitada
+    // Method that validates that the product exists and has sufficient stock for the requested quantity
     private boolean hasEnoughStock(OrderCreatedEvent.OrderItemEvent item) {
         Product product = productRepository.findById(item.productId())
                 .orElseThrow(() -> new ProductNotFoundException(item.productId()));
         return product.getStock() >= item.quantity();
     }
 
-    // Metodo para descontar el stock del producto y persistir el nuevo valor
+    // Method to deduct the product stock and retain the new value
     private void reduceStock(OrderCreatedEvent.OrderItemEvent item) {
         Product product = productRepository.findById(item.productId())
                 .orElseThrow(() -> new ProductNotFoundException(item.productId()));
@@ -51,9 +51,9 @@ public class StockReservationService {
         productRepository.save(product);
     }
 
-    // Enviar la respuesta a order-service
+    // Send the response to order-service
     private void publish(Long orderId, String status) {
-        log.info("Publicando order-evaluated: orderId={}, status={}", orderId, status);
+        log.info("Posting order-evaluated: orderId={}, status={}\n", orderId, status);
         kafkaTemplate.send("order-evaluated", orderId.toString(), new StockEvaluatedEvent(orderId, status));
     }
 }
