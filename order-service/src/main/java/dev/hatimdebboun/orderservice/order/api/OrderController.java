@@ -30,9 +30,9 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<OrderResponse> createOrder(@Valid @RequestBody OrderDTO dto) {
-        log.info("Recibida petición de creación de pedido: {}", dto);
+        log.info("Order creation request received: {}", dto);
         Long orderId = orderService.createOrder(dto);
-        log.info("Pedido creado con id={}", orderId);
+        log.info("Order created with id={}", orderId);
         return ResponseEntity.status(HttpStatus.CREATED).body(new OrderResponse(orderId));
     }
 }

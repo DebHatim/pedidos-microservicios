@@ -31,25 +31,25 @@ public class KafkaConfig {
     public ProducerFactory<String, Object> producerFactory() {
         Map<String, Object> config = new HashMap<>();
 
-        // Establecer como atributo el servidor donde funciona Kafka
+        // Set as an attribute the server where Kafka runs
         config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
 
-        // Serializar la key como String - StringSerializer.class
+        // Serialize key as String - StringSerializer.class
         config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
 
-        // Serializar el value como JSON - JsonSerializer.class
+        // Serialize the value as JSON - JsonSerializer.class
         config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JacksonJsonSerializer.class);
 
         return new DefaultKafkaProducerFactory<>(config);
     }
 
     @Bean
-    // KafkaTemplate es el objeto que se va a usar en el servicio para publicar mensajes - usa producerFactory
+    // KafkaTemplate is the object that will be used in the service to publish messages - it uses producerFactory
     public KafkaTemplate<String, Object> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 
-    // Error handler por si falla el listener
+    // Error handler in case the listener fails
     @Bean
     public DefaultErrorHandler errorHandler(KafkaTemplate<String, Object> template) {
         return new DefaultErrorHandler(

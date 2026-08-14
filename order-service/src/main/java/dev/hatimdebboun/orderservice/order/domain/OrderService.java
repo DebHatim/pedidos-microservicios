@@ -24,16 +24,16 @@ public class OrderService {
         order.setTotal(dto.total());
 
         Order saved = orderRepository.save(order);
-        log.info("Orden {} persistida en BD con estado PENDING", saved.getId());
+        log.info("Order {} persisted in DB with PENDING status", saved.getId());
 
         OrderCreatedEvent event = new OrderCreatedEvent(saved.getId(), mapToEventItems(saved.getItems()));
 
         kafkaTemplate.send("order-created", saved.getId().toString(), event)
                 .whenComplete((result, ex) -> {
                     if (ex != null) {
-                        log.error("FALLO al publicar order-created para orderId={}", saved.getId(), ex);
+                        log.error("FAILURE to publish order-created for orderId={}", saved.getId(), ex);
                     } else {
-                        log.info("order-created publicado OK para orderId={} en partición {}",
+                        log.info("order-created published OK for orderId={} in partition {}",
                                 saved.getId(), result.getRecordMetadata().partition());
                     }
                 });

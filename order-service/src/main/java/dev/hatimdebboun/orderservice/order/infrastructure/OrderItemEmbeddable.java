@@ -1,4 +1,3 @@
-// infrastructure/OrderItemEmbeddable.java
 package dev.hatimdebboun.orderservice.order.infrastructure;
 
 import jakarta.persistence.Embeddable;

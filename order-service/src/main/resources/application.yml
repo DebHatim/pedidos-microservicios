@@ -9,12 +9,12 @@ spring:
       ddl-auto: update
     show-sql: true
 
-# Configuracion metricas y trazas
+# Metrics and trace configuration
 management:
   endpoints:
     web:
       exposure:
-        # Exponemos los endpoints vitales para Prometheus y health checks
+        # We expose the vital endpoints for Prometheus and health checks
         include: health, metrics, prometheus
   endpoint:
     health:
@@ -22,11 +22,11 @@ management:
 
   tracing:
     sampling:
-      probability: 1.0 # 1.0 = Envía el 100% de las trazas (ideal para desarrollo/demo)
+      probability: 1.0 # 1.0 = Sends 100% of traces (ideal for development/demo)
 
   otlp:
     tracing:
-      # URL de Jaeger en la red de Docker Compose usando el puerto HTTP OTLP
+      # Jaeger URL on the Docker Compose network using the HTTP OTLP port
       endpoint: http://jaeger:4318/v1/traces
 logging:
   level:

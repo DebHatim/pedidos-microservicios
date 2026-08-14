@@ -14,7 +14,7 @@ public class InventoryEvaluatorService {
 
     @KafkaListener(topics = "order-evaluated", groupId = "orders-group", containerFactory = "kafkaListenerContainerFactory")
     public void evaluateInventory(StockEvaluatedEvent event) {
-        log.info("Evento order-evaluated recibido: orderId={}, status={}", event.orderId(), event.status());
+        log.info("Order-evaluated event received: orderId={}, status={}", event.orderId(), event.status());
 
         Order order = orderRepository.findById(event.orderId())
                 .orElseThrow(() -> new OrderNotFoundException(event.orderId()));
@@ -22,6 +22,6 @@ public class InventoryEvaluatorService {
         order.setStatus("CONFIRMED".equals(event.status()) ? OrderStatus.CONFIRMED : OrderStatus.REJECTED);
         orderRepository.save(order);
 
-        log.info("Orden {} actualizada a estado {}", order.getId(), order.getStatus());
+        log.info("Order {} updated to state {}", order.getId(), order.getStatus());
     }
 }

@@ -1,4 +1,4 @@
 package dev.hatimdebboun.orderservice.order.domain;
 
-// Clase del evento que publica inventory-service como respuesta
+// Class of the event that inventory-service publishes as a response
 public record StockEvaluatedEvent(Long orderId, String status) {}
