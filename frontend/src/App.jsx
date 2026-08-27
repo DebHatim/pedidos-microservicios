@@ -75,11 +75,11 @@ export default function App() {
             <div className="view-navigation">
                 <button className="view-tab" data-active={activeTab === 'catalog'}
                         onClick={() => setActiveTab('catalog')}>
-                    Catálogo
+                    Catalog
                 </button>
                 <button className="view-tab" data-active={activeTab === 'orders'}
                     onClick={() => setActiveTab('orders')}>
-                    Mis Pedidos
+                    My Orders
                 </button>
             </div>
 
