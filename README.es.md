@@ -89,12 +89,22 @@ disponible.
 <table>
   <tr>
     <td style="width: 50%; text-align: center;">
-      <img src="assets/screenshots/catalogo.png" alt="Catálogo de productos con filtro por categoría" />
+      <img src="assets/screenshots/catalog.png" alt="Catálogo de productos con filtro por categoría" />
       <p><em>Catálogo: filtro por categoría, gauge de stock y estados de carga</em></p>
     </td>
     <td style="width: 50%; text-align: center;">
-      <img src="assets/screenshots/carrito.png" alt="Carrito de pedido con confirmación en tiempo real" />
+      <img src="assets/screenshots/cart.png" alt="Carrito de pedido con confirmación en tiempo real" />
       <p><em>Carrito: gestión de cantidades y confirmación del pedido en tiempo real</em></p>
+    </td>
+  </tr>
+  <tr>
+    <td style="width: 50%; text-align: center;">
+      <img src="assets/screenshots/grafana.png" alt="Dashboard de Grafana con métricas de los microservicios" />
+      <p><em>Métricas en tiempo real de los 4 servicios vía Prometheus/Grafana</em></p>
+    </td>
+    <td style="width: 50%; text-align: center;">
+      <img src="assets/screenshots/jaeger.png" alt="Traza distribuida en Jaeger" />
+      <p><em>Traza distribuida del flujo order-service → Kafka → inventory-service</em></p>
     </td>
   </tr>
 </table>

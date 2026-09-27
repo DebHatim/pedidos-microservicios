@@ -88,12 +88,22 @@ down, order-service keeps accepting orders normally and events queue up until th
 <table>
   <tr>
     <td style="width: 50%; text-align: center;">
-      <img src="assets/screenshots/catalogo.png" alt="Product catalog with category filter" />
+      <img src="assets/screenshots/catalog.png" alt="Product catalog with category filter" />
       <p><em>Catalog: category filter, stock gauge and loading states</em></p>
     </td>
     <td style="width: 50%; text-align: center;">
-      <img src="assets/screenshots/carrito.png" alt="Cart with real-time confirmation" />
+      <img src="assets/screenshots/cart.png" alt="Cart with real-time confirmation" />
       <p><em>Cart: quantity management and real-time order confirmation</em></p>
+    </td>
+  </tr>
+  <tr>
+    <td style="width: 50%; text-align: center;">
+      <img src="assets/screenshots/grafana.png" alt="Grafana dashboard with microservices metrics" />
+      <p><em>Real-time metrics for all 4 services via Prometheus/Grafana</em></p>
+    </td>
+    <td style="width: 50%; text-align: center;">
+      <img src="assets/screenshots/jaeger.png" alt="Trace distributed in Jaeger" />
+      <p><em>Distributed trace of the order-service flow → Kafka → inventory-service</em></p>
     </td>
   </tr>
 </table>

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import {useCallback, useEffect, useMemo, useState} from 'react'
 import { fetchProducts } from './api.js'
 import { useCart } from './hooks/useCart.js'
 import { useNotifications } from './hooks/useNotifications.js'
@@ -19,7 +19,17 @@ export default function App() {
     const [selectedCategory, setSelectedCategory] = useState('ALL')
     const [reloadKey, setReloadKey] = useState(0)
 
-    const { toasts, dismiss } = useNotifications()
+    const refreshProducts = useCallback(() => {
+        fetchProducts()
+            .then((data) => {
+                setProducts(data)
+                setStatus('success')
+            })
+            .catch(() => {
+            })
+    }, [])
+
+    const { toasts, dismiss } = useNotifications(refreshProducts)
 
     const cart = useCart()
     const cartQuantities = useMemo(
