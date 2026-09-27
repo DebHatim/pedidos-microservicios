@@ -1,8 +1,8 @@
-[![English](https://img.shields.io/badge/Language-English-blue)](README.en.md) [![Español](https://img.shields.io/badge/Idioma-Español-red)](#)
+[![English](https://img.shields.io/badge/Language-English-blue)](#) [![Español](https://img.shields.io/badge/Idioma-Español-red)](README.md)
 
 ---
 
-# Sistema de Pedidos e Inventario en Tiempo Real
+# Real-Time Order & Inventory System
 
 [![Java](https://img.shields.io/badge/Java-21-blue)](https://openjdk.org/projects/jdk/21/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.1-brightgreen)](https://spring.io/projects/spring-boot)
@@ -13,182 +13,191 @@
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED)](https://www.docker.com/)
 [![Resilience4j](https://img.shields.io/badge/Resilience-Resilience4j-orange)]()
 [![OpenAPI](https://img.shields.io/badge/API%20Docs-Swagger-85EA2D)]()
+[![CI](https://github.com/DebHatim/pedidos-inventario-microservicios/actions/workflows/ci.yml/badge.svg)](https://github.com/DebHatim/pedidos-inventario-microservicios/actions/workflows/ci.yml)
 [![Portfolio](https://img.shields.io/badge/Portfolio-hatimdebboun.dev-emerald)](https://hatimdebboun.dev)
 
-Plataforma de e-commerce basada en microservicios donde un usuario crea un pedido, el sistema reserva el stock de forma
-asíncrona y le notifica en tiempo real si el pedido se confirma o se rechaza por falta de existencias. Arquitectura
-orientada a eventos con Apache Kafka como núcleo de comunicación entre servicios, gateway centralizado con resiliencia
-(rate limiting, retries, circuit breaker) y notificaciones push vía WebSocket.
+Microservices-based e-commerce platform where a user places an order, the system reserves stock asynchronously, and
+notifies them in real time whether the order was confirmed or rejected due to insufficient stock. Event-driven
+architecture with Apache Kafka at its core, a centralized gateway with resilience (rate limiting, retries, circuit
+breaker) and push notifications via WebSocket.
 
 ---
 
 ## Demo
 
-![Demostración del flujo de pedidos en tiempo real](assets/screenshots/demo.gif)
+![Real-time order flow demo](assets/screenshots/demo.gif)
 
-*Añadir productos al carrito, confirmar el pedido y ver la notificación de confirmación/rechazo llegar en tiempo real
-vía WebSocket en el momento en que inventory-service evalúa el stock disponible.*
+*Add products to the cart, place the order, and watch the confirmation/rejection notification arrive in real time via
+WebSocket the moment inventory-service evaluates the available stock.*
 
-## Arquitectura
+## Architecture
 
-![Diagrama de Arquitectura](assets/arquitectura-es.svg)
+![Architecture Diagram](assets/arquitectura-en.svg)
 
-Cuatro servicios independientes, cada uno con su propia responsabilidad y (cuando aplica) su propia base de datos:
+Four independent services, each with its own responsibility and (where it applies) its own database:
 
-- **api-gateway**: punto de entrada único. Enruta `/api/orders/**` a order-service, `/api/products/**` a
-  inventory-service y `/ws/**` a notification-service. Aplica rate limiting (Redis), reintentos y circuit breaker por
-  ruta.
-- **order-service**: crea el pedido en estado `PENDING`, lo persiste en su propia base MySQL y publica el evento
-  `order-created` en Kafka. Escucha `order-evaluated` para actualizar el pedido a `CONFIRMED` o `REJECTED`.
-- **inventory-service**: mantiene el catálogo de productos y su stock en su propia base MySQL. Escucha
-  `order-created`, comprueba stock disponible, lo descuenta si es suficiente y publica `order-evaluated`.
-- **notification-service**: puente entre Kafka y el cliente. Escucha `order-evaluated` y reenvía la notificación al
-  frontend por WebSocket/STOMP, sin base de datos propia.
+- **api-gateway**: single entry point. Routes `/api/orders/**` to order-service, `/api/products/**` to
+  inventory-service and `/ws/**` to notification-service. Applies rate limiting (Redis), retries and circuit breaker
+  per route.
+- **order-service**: creates the order in `PENDING` state, persists it to its own MySQL database and publishes the
+  `order-created` event to Kafka. Listens for `order-evaluated` to update the order to `CONFIRMED` or `REJECTED`.
+- **inventory-service**: keeps the product catalog and its stock in its own MySQL database. Listens for
+  `order-created`, checks available stock, deducts it if sufficient and publishes `order-evaluated`.
+- **notification-service**: bridge between Kafka and the client. Listens for `order-evaluated` and forwards the
+  notification to the frontend via WebSocket/STOMP, with no database of its own.
 
-La comunicación entre order-service e inventory-service es siempre asíncrona vía Kafka: si inventory-service cae,
-order-service sigue aceptando pedidos con normalidad y los eventos se acumulan hasta que el consumidor vuelve a estar
-disponible.
+Communication between order-service and inventory-service is always asynchronous via Kafka: if inventory-service goes
+down, order-service keeps accepting orders normally and events queue up until the consumer comes back online.
 
 ## Stack
 
-| Capa              | Tecnología                                                                 |
-|-------------------|----------------------------------------------------------------------------|
-| Backend           | Java 21 · Spring Boot 4.1                                                  |
-| Gateway           | Spring Cloud Gateway (WebFlux)                                             |
-| Mensajería        | Apache Kafka (modo KRaft, sin Zookeeper)                                   |
-| Resiliencia       | Resilience4j (circuit breaker) · Retry · Rate limiting (Redis)             |
-| Persistencia      | JPA/Hibernate · MySQL 8 (una base de datos por servicio)                   |
-| Tiempo real       | WebSocket · STOMP                                                          |
-| Documentación API | springdoc-openapi (Swagger UI) por servicio                                |
-| Observabilidad    | Spring Boot Actuator · Micrometer · Prometheus · Grafana · Jaeger (OTLP)   |
-| Frontend          | React 18 · Vite · @stomp/stompjs                                           |
-| Infraestructura   | Docker Compose (4 microservicios, 2 MySQL, Kafka, Redis, frontend + nginx) |
-| Build             | Maven · Lombok                                                             |
+| Layer          | Technology                                                                |
+|----------------|---------------------------------------------------------------------------|
+| Backend        | Java 21 · Spring Boot 4.1                                                 |
+| Gateway        | Spring Cloud Gateway (WebFlux)                                            |
+| Messaging      | Apache Kafka (KRaft mode, no Zookeeper)                                   |
+| Resilience     | Resilience4j (circuit breaker) · Retry · Rate limiting (Redis)            |
+| Persistence    | JPA/Hibernate · MySQL 8 (one database per service)                        |
+| Real-time      | WebSocket · STOMP                                                         |
+| API Docs       | springdoc-openapi (Swagger UI) per service                                |
+| Observability  | Spring Boot Actuator · Micrometer · Prometheus · Grafana · Jaeger (OTLP)  |
+| Testing        | JUnit 5 · Mockito · Testcontainers (MySQL + Kafka) · Awaitility           |
+| Frontend       | React 18 · Vite · @stomp/stompjs                                          |
+| Infrastructure | Docker Compose (4 microservices, 2 MySQL, Kafka, Redis, frontend + nginx) |
+| CI/CD          | GitHub Actions (automated tests on every push/PR)                         |
+| Build          | Maven · Lombok                                                            |
 
-## Funcionalidades
+## Features
 
-- Catálogo de productos con filtro por categoría, gauge visual de stock y estados de carga/error/vacío
-- Carrito de compra con control de cantidades por stock disponible y creación de pedido (`POST /api/orders`)
-- Consulta del estado de un pedido por id (`GET /api/orders/{id}`)
-- Evaluación de stock en tiempo real mediante consumidor Kafka en inventory-service, con descuento atómico de stock
-- Notificaciones instantáneas de confirmación/rechazo del pedido al frontend vía WebSocket/STOMP, sin necesidad de
-  refrescar la página
-- Gateway centralizado con rate limiting por IP (Redis), reintentos automáticos en rutas GET y circuit breaker
-  configurado por servicio de destino
-- Reposición manual de stock por producto (`POST /api/products/{id}/stock`)
-- Documentación de API interactiva vía Swagger UI en cada microservicio
-- Métricas expuestas por Actuator/Prometheus y trazas distribuidas vía OpenTelemetry/Jaeger, visualizables en Grafana
-- Diseño visual propio (paleta sage/crema) servido en producción mediante Dockerfile multi-stage + nginx
+- Product catalog with category filtering, a visual stock gauge, and loading/error/empty states
+- Shopping cart with quantity limits based on available stock and order creation (`POST /api/orders`)
+- Order status lookup by id (`GET /api/orders/{id}`)
+- Real-time stock evaluation via a Kafka consumer in inventory-service, with atomic stock deduction
+- Instant order confirmation/rejection notifications pushed to the frontend via WebSocket/STOMP, no page refresh
+  needed
+- Centralized gateway with per-IP rate limiting (Redis), automatic retries on GET routes and a circuit breaker per
+  downstream service, with fallback controllers
+- Manual stock replenishment per product (`POST /api/products/{id}/stock`)
+- Structured error handling (`GlobalExceptionHandler`) and Kafka listener failure handling
+- Interactive API documentation via Swagger UI on each microservice
+- Metrics exposed via Actuator/Prometheus and distributed traces via OpenTelemetry/Jaeger, visualized in Grafana
+- Custom UI design (sage/cream palette) served in production via a multi-stage Dockerfile + nginx
 
-## Capturas de pantalla
+## Screenshots
 
 <table>
   <tr>
     <td style="width: 50%; text-align: center;">
-      <img src="assets/screenshots/catalogo.png" alt="Catálogo de productos con filtro por categoría" />
-      <p><em>Catálogo: filtro por categoría, gauge de stock y estados de carga</em></p>
+      <img src="assets/screenshots/catalogo.png" alt="Product catalog with category filter" />
+      <p><em>Catalog: category filter, stock gauge and loading states</em></p>
     </td>
     <td style="width: 50%; text-align: center;">
-      <img src="assets/screenshots/carrito.png" alt="Carrito de pedido con confirmación en tiempo real" />
-      <p><em>Carrito: gestión de cantidades y confirmación del pedido en tiempo real</em></p>
+      <img src="assets/screenshots/carrito.png" alt="Cart with real-time confirmation" />
+      <p><em>Cart: quantity management and real-time order confirmation</em></p>
     </td>
   </tr>
 </table>
 
-## Decisiones de diseño
+## Design decisions
 
-**¿Por qué microservicios y no un monolito?**
-Decisión consciente para aprender y demostrar el patrón, no porque el dominio (pedidos + inventario) lo exija por
-tamaño. Se gana aislamiento de fallos y escalado independiente por servicio; se pierde consistencia transaccional
-fuerte entre servicios, resuelta aquí con consistencia eventual vía Kafka. Para un proyecto pequeño con un solo
-equipo, un monolito bien hecho sigue siendo la decisión correcta la mayoría de las veces y este proyecto es una
-excepción deliberada, orientada a demostrar el patrón.
+**Why microservices instead of a monolith?**
+A deliberate choice to learn and demonstrate the pattern, not because the domain (orders + inventory) demands it by
+size. It gains fault isolation and independent scaling per service; it loses strong transactional consistency across
+services, resolved here with eventual consistency via Kafka. For a small project with a single team, a well-built
+monolith remains the right call most of the time, and this project is a deliberate exception meant to demonstrate the
+pattern.
 
-**¿Por qué Kafka y no una llamada REST directa entre order-service e inventory-service?**
-El desacoplamiento permite que ambos servicios evolucionen de forma independiente. Si inventory-service cae, los
-pedidos se siguen aceptando y los eventos se acumulan en Kafka hasta que el consumidor vuelve, sin perder ninguno.
+**Why Kafka instead of a direct REST call between order-service and inventory-service?**
+Decoupling lets both services evolve independently. If inventory-service goes down, orders keep being accepted and
+events queue up in Kafka until the consumer comes back, without losing any.
 
-**¿Por qué una base de datos por servicio en vez de una compartida?**
-Cada servicio es dueño exclusivo de sus datos. Evita acoplamiento a nivel de esquema entre order-service e
-inventory-service y permite migrar o escalar cada base de forma independiente.
+**Why a database per service instead of a shared one?**
+Each service exclusively owns its data. It avoids schema-level coupling between order-service and inventory-service
+and lets each database be migrated or scaled independently.
 
-**¿Por qué KRaft en vez de Zookeeper?**
-Menos piezas móviles en el docker-compose y es la dirección en la que Kafka está migrando por defecto; no tiene
-sentido introducir una dependencia que el propio proyecto Kafka está deprecando.
+**Why KRaft instead of Zookeeper?**
+Fewer moving parts in the docker-compose setup, and it's the direction Kafka is migrating to by default; there's no
+point introducing a dependency the Kafka project itself is deprecating.
 
-**¿Por qué WebSocket/STOMP y no polling para las notificaciones?**
-El polling requeriría que el cliente pregunte cada X segundos si el pedido cambió de estado, generando carga
-innecesaria en el gateway. WebSocket mantiene una conexión abierta y notification-service empuja la notificación en
-el momento exacto en que inventory-service evalúa el pedido.
+**Why WebSocket/STOMP instead of polling for notifications?**
+Polling would require the client to ask every X seconds whether the order changed state, adding unnecessary load on
+the gateway. WebSocket keeps a connection open and notification-service pushes the notification the exact moment
+inventory-service evaluates the order.
 
-**¿Por qué circuit breaker en el gateway y no en cada servicio individual?**
-El gateway es el único punto por el que pasa todo el tráfico externo; centralizar ahí la protección evita duplicar la
-misma configuración de resiliencia en cuatro sitios distintos y permite fallar rápido antes de saturar un servicio
-que ya está degradado.
+**Why circuit breaker in the gateway and not in each individual service?**
+The gateway is the single point all external traffic passes through; centralizing protection there avoids duplicating
+the same resilience configuration in four different places and allows failing fast before overloading an already
+degraded service.
 
-**¿Por qué tracing distribuido si ya hay métricas agregadas?**
-Las métricas dicen que algo va mal (latencia alta, tasa de error); el tracing distribuido dice dónde exactamente
-dentro de la cadena order-service → Kafka → inventory-service → Kafka → notification-service se está produciendo el
-problema, algo que un dashboard de métricas agregadas no puede mostrar por sí solo.
+**Why distributed tracing if there are already aggregated metrics?**
+Metrics tell you something is wrong (high latency, error rate); distributed tracing tells you exactly where in the
+order-service → Kafka → inventory-service → Kafka → notification-service chain the problem is happening — something
+an aggregated metrics dashboard can't show on its own.
 
-**Lecciones aprendidas / troubleshooting**
+**Lessons learned / troubleshooting**
 
-- `.ignoreTypeHeaders()` es obligatorio en el `JacksonJsonDeserializer` al consumir eventos publicados por otro
-  servicio. Por defecto, Kafka usa el header `__TypeId__` para resolver la clase de destino, y ese header contiene el
-  nombre completo de la clase del *productor*, que no existe en el classpath del *consumidor*. Omitir un consumidor
-  sin este flag provoca fallos de deserialización silenciosos que acaban en el dead-letter topic tras los reintentos.
-- `@EnableKafka` no se auto-configura solo con tener `spring-kafka` en el classpath. En Spring Boot 4.1.0 los
-  `@KafkaListener` no se registraban pese a que el `ConcurrentKafkaListenerContainerFactory` estaba correctamente
-  definido como bean. Sin logs de error, sin excepciones al arrancar el contexto: los consumidores simplemente nunca
-  se activaban, dejando los pedidos permanentemente en `PENDING`. Diagnosticado comparando logs de arranque entre
-  servicios (el productor sí logueaba, el consumidor no dejaba ni rastro con `DEBUG` activado) y confirmando con
-  `kafka-consumer-groups.sh --list` que el consumer group nunca llegaba a registrarse en el broker.
+- `.ignoreTypeHeaders()` is mandatory on `JacksonJsonDeserializer` when consuming events published by another
+  service. By default, Kafka uses the `__TypeId__` header to resolve the target class, and that header contains the
+  *producer's* fully qualified class name, which doesn't exist on the *consumer's* classpath. Omitting this flag on a
+  consumer causes silent deserialization failures that end up in the dead-letter topic after retries.
+- `@EnableKafka` isn't auto-configured just by having `spring-kafka` on the classpath. On Spring Boot 4.1.0,
+  `@KafkaListener`s weren't being registered even though the `ConcurrentKafkaListenerContainerFactory` was correctly
+  defined as a bean. No error logs, no exceptions on context startup — the consumers simply never activated, leaving
+  orders permanently stuck in `PENDING`. Diagnosed by comparing startup logs between services (the producer logged
+  fine, the consumer left no trace even with `DEBUG` on) and confirming with `kafka-consumer-groups.sh --list` that
+  the consumer group never registered with the broker.
+- Testcontainers 2.x reorganized packages: `MySQLContainer` now lives in `org.testcontainers.mysql`, not
+  `org.testcontainers.containers`. With the deprecated class and no real Kafka container, listeners kept retrying the
+  connection against `localhost:9092` in a loop, hanging the JVM for ~30s at the end of each test even when the test
+  itself passed. The fix was to spin up a real `KafkaContainer` in the integration tests as well.
 
-## Dependencias principales
+## Key dependencies
 
 **api-gateway**
 
-| Dependencia                                              | Propósito                                               |
-|----------------------------------------------------------|---------------------------------------------------------|
-| spring-boot-starter-webflux                              | Stack reactivo sobre el que corre Spring Cloud Gateway  |
-| spring-cloud-starter-gateway-server-webflux              | Enrutamiento reactivo hacia los microservicios          |
-| spring-cloud-starter-circuitbreaker-reactor-resilience4j | Circuit breaker por ruta                                |
-| spring-boot-starter-data-redis-reactive                  | Backend de Redis para el rate limiter del gateway       |
-| resilience4j-spring-boot4                                | Configuración de resiliencia (circuit breaker, retry)   |
-| micrometer-registry-prometheus                           | Métricas del gateway en formato Prometheus vía Actuator |
-| micrometer-tracing-bridge-otel                           | Trazas del gateway hacia Jaeger vía OTLP                |
-| springdoc-openapi-starter-webflux-ui                     | Swagger UI agregando la documentación de los servicios  |
+| Dependency                                               | Purpose                                            |
+|----------------------------------------------------------|----------------------------------------------------|
+| spring-boot-starter-webflux                              | Reactive stack Spring Cloud Gateway runs on        |
+| spring-cloud-starter-gateway-server-webflux              | Reactive routing to the microservices              |
+| spring-cloud-starter-circuitbreaker-reactor-resilience4j | Circuit breaker per route                          |
+| spring-boot-starter-data-redis-reactive                  | Redis backend for the gateway's rate limiter       |
+| resilience4j-spring-boot4                                | Resilience configuration (circuit breaker, retry)  |
+| micrometer-registry-prometheus                           | Gateway metrics in Prometheus format via Actuator  |
+| micrometer-tracing-bridge-otel                           | Gateway traces to Jaeger via OTLP                  |
+| springdoc-openapi-starter-webflux-ui                     | Swagger UI aggregating the services' documentation |
 
 **order-service / inventory-service**
 
-| Dependencia                         | Propósito                                               |
-|-------------------------------------|---------------------------------------------------------|
-| spring-boot-starter-web             | Capa REST sobre Tomcat embebido                         |
-| spring-boot-starter-data-jpa        | Persistencia JPA/Hibernate contra MySQL                 |
-| spring-boot-starter-validation      | Validación de DTOs de entrada (`@Valid`)                |
-| spring-kafka                        | Producción/consumo de eventos con Apache Kafka          |
-| mysql-connector-j                   | Driver JDBC de MySQL                                    |
-| resilience4j-spring-boot4           | Anotaciones de circuit breaker, retry y timeout         |
-| micrometer-registry-prometheus      | Métricas en formato Prometheus vía Actuator             |
-| micrometer-tracing-bridge-otel      | Trazas distribuidas hacia Jaeger vía OTLP               |
-| springdoc-openapi-starter-webmvc-ui | Swagger UI generado a partir del código                 |
-| spring-kafka-test                   | Utilidades para tests de integración con Kafka embebido |
+| Dependency                          | Purpose                                                |
+|-------------------------------------|--------------------------------------------------------|
+| spring-boot-starter-web             | REST layer on embedded Tomcat                          |
+| spring-boot-starter-data-jpa        | JPA/Hibernate persistence against MySQL                |
+| spring-boot-starter-validation      | Input DTO validation (`@Valid`)                        |
+| spring-kafka                        | Producing/consuming events with Apache Kafka           |
+| mysql-connector-j                   | MySQL JDBC driver                                      |
+| resilience4j-spring-boot4           | Circuit breaker, retry and timeout annotations         |
+| micrometer-registry-prometheus      | Metrics in Prometheus format via Actuator              |
+| micrometer-tracing-bridge-otel      | Distributed traces to Jaeger via OTLP                  |
+| springdoc-openapi-starter-webmvc-ui | Swagger UI generated from the code                     |
+| spring-kafka-test                   | Test utilities for Kafka                               |
+| testcontainers (mysql, kafka)       | Real MySQL and Kafka containers in integration tests   |
+| awaitility                          | Async waiting in integration tests (no `Thread.sleep`) |
 
 **notification-service**
 
-| Dependencia                         | Propósito                                               |
-|-------------------------------------|---------------------------------------------------------|
-| spring-boot-starter-web             | Capa REST básica y arranque del servidor embebido       |
-| spring-boot-starter-websocket       | Endpoint STOMP sobre WebSocket para notificaciones push |
-| spring-kafka                        | Consumo del evento `order-evaluated`                    |
-| resilience4j-spring-boot4           | Resiliencia en el consumidor Kafka                      |
-| micrometer-registry-prometheus      | Métricas en formato Prometheus vía Actuator             |
-| micrometer-tracing-bridge-otel      | Trazas distribuidas hacia Jaeger vía OTLP               |
-| springdoc-openapi-starter-webmvc-ui | Swagger UI generado a partir del código                 |
+| Dependency                          | Purpose                                              |
+|-------------------------------------|------------------------------------------------------|
+| spring-boot-starter-web             | Basic REST layer and embedded server bootstrap       |
+| spring-boot-starter-websocket       | STOMP over WebSocket endpoint for push notifications |
+| spring-kafka                        | Consuming the `order-evaluated` event                |
+| resilience4j-spring-boot4           | Resilience on the Kafka consumer                     |
+| micrometer-registry-prometheus      | Metrics in Prometheus format via Actuator            |
+| micrometer-tracing-bridge-otel      | Distributed traces to Jaeger via OTLP                |
+| springdoc-openapi-starter-webmvc-ui | Swagger UI generated from the code                   |
 
-## Probarlo en local
+## Run it locally
 
-**Requisito único:** tener Docker instalado.
+**Only requirement:** Docker installed.
 
 ```bash
 git clone https://github.com/DebHatim/pedidos-inventario-microservicios.git
@@ -196,33 +205,33 @@ cd pedidos-inventario-microservicios
 docker compose up -d
 ```
 
-Ese único comando levanta las 2 bases MySQL, Redis, Kafka, los 4 microservicios y el frontend. Sin necesidad de
-instalar Java, Maven ni Node.
+This single command spins up both MySQL databases, Redis, Kafka, the 4 microservices and the frontend. No need to
+install Java, Maven or Node.
 
 - Frontend: `http://localhost`
 - API Gateway: `http://localhost:8080`
-- Swagger UI (por servicio, vía gateway o puerto directo): `http://localhost:8081/swagger-ui.html` (order-service),
+- Swagger UI (per service, via gateway or direct port): `http://localhost:8081/swagger-ui.html` (order-service),
   `http://localhost:8082/swagger-ui.html` (inventory-service)
 - Health check: `http://localhost:8080/actuator/health`
 - Prometheus: `http://localhost:9090`
 - Grafana: `http://localhost:3000`
 - Jaeger UI: `http://localhost:16686`
 
-> Las bases de datos MySQL corren con usuario `root` y contraseña `root`, configuración pensada solo para desarrollo
-> local, no para un despliegue expuesto a internet.
+> The MySQL databases run with user `root` and password `root`, a setup meant only for local development, not for a
+> deployment exposed to the internet.
 
 <details>
-<summary>Desarrollo de un microservicio sin Docker (opcional)</summary>
+<summary>Developing a service without Docker (optional)</summary>
 
-Si quieres iterar directamente sobre un servicio con Maven, necesitas Java 21, Maven, y Kafka + MySQL corriendo (puedes
-levantar solo la infraestructura con `docker compose up -d kafka redis order-mysql inventory-mysql`).
+If you want to iterate directly on a service with Maven, you need Java 21, Maven, and Kafka + MySQL running (you can
+spin up just the infrastructure with `docker compose up -d kafka redis order-mysql inventory-mysql`).
 
 ```bash
 cd order-service
 ./mvnw spring-boot:run
 ```
 
-Y para el frontend:
+And for the frontend:
 
 ```bash
 cd frontend
@@ -230,18 +239,55 @@ npm install
 npm run dev
 ```
 
-Variable de entorno relevante: `VITE_API_BASE_URL` (frontend, build-time, por defecto `http://localhost:8080`).
+Relevant environment variable: `VITE_API_BASE_URL` (frontend, build-time, defaults to `http://localhost:8080`).
 </details>
 
 ## Testing
 
-> Suite de tests actualmente en construcción. Objetivo: cobertura de la lógica de negocio con JUnit 5 + Mockito, y
-> tests de integración con Testcontainers (Kafka + MySQL) para order-service e inventory-service.
+Business logic coverage with **JUnit 5 + Mockito**, plus integration tests with **Testcontainers** (real MySQL +
+Kafka) verifying the full end-to-end flow:
+
+- `ProductServiceTest`, `StockReservationServiceTest` - catalog logic and stock reservation/deduction
+- `OrderCreatedListenerTest` - consuming the `order-created` event in inventory-service
+- `GlobalExceptionHandlerTest` - structured error handling
+- `OrderFlowIntegrationTest` (order-service) - creates a real order, simulates `order-evaluated` via Kafka and
+  verifies the state change (`CONFIRMED`/`REJECTED`) against real MySQL
+- `InventoryFlowIntegrationTest` (inventory-service) - publishes `order-created` to real Kafka, verifies stock
+  deduction against real MySQL and the `order-evaluated` publication
 
 ```bash
 ./mvnw test
 ```
 
-## Autor
+(Integration tests require Docker to be available to spin up the Testcontainers.)
+
+Every push and pull request runs the full suite via GitHub Actions.
+
+<details>
+<summary>Technical screenshots</summary>
+<br>
+
+<table>
+  <tr>
+    <td style="width: 50%; text-align: center;">
+      <img src="assets/screenshots/tests-passing.png" alt="Test suite passing" />
+      <p><em>Test suite running successfully</em></p>
+    </td>
+    <td style="width: 50%; text-align: center;">
+      <img src="assets/screenshots/swagger-ui.png" alt="Swagger UI" />
+      <p><em>API documented and explorable via Swagger UI</em></p>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" style="text-align: center;">
+      <img src="assets/screenshots/docker-compose-up.png" alt="Docker Compose starting all services" />
+      <p><em>The whole system starting with a single <code>docker compose up -d</code></em></p>
+    </td>
+  </tr>
+</table>
+
+</details>
+
+## Author
 
 **Hatim Debboun** · [Portfolio](https://hatimdebboun.dev) · [LinkedIn](https://linkedin.com/in/hatimdebboun) · [GitHub](https://github.com/DebHatim)
