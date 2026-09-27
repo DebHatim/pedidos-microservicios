@@ -2,9 +2,9 @@ name: CI/CD Microservices Products
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
   test:
@@ -33,7 +33,7 @@ jobs:
 
   deploy:
     needs: test
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to the VPS via SSH
@@ -45,6 +45,6 @@ jobs:
           script: |
             cd /opt/productos
             git fetch --all
-            git reset --hard origin/main
+            git reset --hard origin/master
             docker compose up -d --build
             docker image prune -f
