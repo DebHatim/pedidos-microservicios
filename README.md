@@ -13,7 +13,7 @@
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED)](https://www.docker.com/)
 [![Resilience4j](https://img.shields.io/badge/Resilience-Resilience4j-orange)]()
 [![OpenAPI](https://img.shields.io/badge/API%20Docs-Swagger-85EA2D)]()
-[![CI](https://github.com/DebHatim/pedidos-inventario-microservicios/actions/workflows/ci.yml/badge.svg)](https://github.com/DebHatim/pedidos-inventario-microservicios/actions/workflows/ci.yml)
+[![CI](https://github.com/DebHatim/pedidos-microservicios/actions/workflows/ci.yml/badge.svg)](https://github.com/DebHatim/pedidos-microservicios/actions/workflows/ci.yml)
 [![Portfolio](https://img.shields.io/badge/Portfolio-hatimdebboun.dev-emerald)](https://hatimdebboun.dev)
 
 Microservices-based e-commerce platform where a user places an order, the system reserves stock asynchronously, and
