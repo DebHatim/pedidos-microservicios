@@ -13,20 +13,19 @@ management:
   endpoints:
     web:
       exposure:
-        # We expose the vital endpoints for Prometheus and health checks
-        include: health, metrics, prometheus
+        include: health, metrics, prometheus, beans, conditions
   endpoint:
     health:
       show-details: always
 
   tracing:
     sampling:
-      probability: 1.0 # 1.0 = Sends 100% of traces (ideal for development/demo)
+      probability: 1.0
 
   otlp:
     tracing:
-      # Jaeger URL on the Docker Compose network using the HTTP OTLP port
       endpoint: http://jaeger:4318/v1/traces
+
 logging:
   level:
     org.springframework.kafka: INFO
