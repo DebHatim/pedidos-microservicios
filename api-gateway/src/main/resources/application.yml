@@ -6,16 +6,19 @@ server:
 spring:
   application:
     name: api-gateway
+  reactor:
+    context-propagation: auto
   # Configuring timeouts for the gateway's HTTP client
   cloud:
     gateway:
-      httpclient:
-        connect-timeout: 2000
-        response-timeout: 5s
-
       # WebFlux configuration for CORS and routes
       server:
         webflux:
+          httpclient:
+            connect-timeout: 2000
+            response-timeout: 5s
+          observability:
+            enabled: true
           globalcors:
             cors-configurations:
               '[/**]':

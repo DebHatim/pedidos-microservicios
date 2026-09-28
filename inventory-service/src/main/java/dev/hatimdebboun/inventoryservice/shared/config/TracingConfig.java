@@ -1,10 +1,16 @@
 package dev.hatimdebboun.inventoryservice.shared.config;
 
+import io.micrometer.observation.ObservationHandler;
 import io.micrometer.observation.ObservationRegistry;
 import io.micrometer.tracing.Tracer;
+import io.micrometer.tracing.handler.DefaultTracingObservationHandler;
+import io.micrometer.tracing.handler.PropagatingReceiverTracingObservationHandler;
+import io.micrometer.tracing.handler.PropagatingSenderTracingObservationHandler;
 import io.micrometer.tracing.otel.bridge.OtelCurrentTraceContext;
+import io.micrometer.tracing.otel.bridge.OtelPropagator;
 import io.micrometer.tracing.otel.bridge.OtelTracer;
 import io.micrometer.tracing.otel.bridge.OtelTracer.EventPublisher;
+import io.micrometer.tracing.propagation.Propagator;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.trace.propagation.W3CTraceContextPropagator;
 import io.opentelemetry.context.propagation.ContextPropagators;
@@ -44,10 +50,15 @@ public class TracingConfig {
     }
 
     @Bean
-    public OpenTelemetry openTelemetry(SdkTracerProvider sdkTracerProvider) {
+    public ContextPropagators contextPropagators() {
+        return ContextPropagators.create(W3CTraceContextPropagator.getInstance());
+    }
+
+    @Bean
+    public OpenTelemetry openTelemetry(SdkTracerProvider sdkTracerProvider, ContextPropagators contextPropagators) {
         return OpenTelemetrySdk.builder()
                 .setTracerProvider(sdkTracerProvider)
-                .setPropagators(ContextPropagators.create(W3CTraceContextPropagator.getInstance()))
+                .setPropagators(contextPropagators)
                 .build();
     }
 
@@ -72,14 +83,22 @@ public class TracingConfig {
                                    EventPublisher eventPublisher) {
         return new OtelTracer(otelTracer, otelCurrentTraceContext, eventPublisher);
     }
+
     @Bean
-    public io.micrometer.tracing.handler.DefaultTracingObservationHandler defaultTracingObservationHandler(Tracer tracer) {
-        return new io.micrometer.tracing.handler.DefaultTracingObservationHandler(tracer);
+    public Propagator micrometerPropagator(ContextPropagators contextPropagators,
+                                           io.opentelemetry.api.trace.Tracer otelTracer) {
+        return new OtelPropagator(contextPropagators, otelTracer);
     }
 
     @Bean
     public ObservationRegistryCustomizer<ObservationRegistry> tracingObservationRegistryCustomizer(
-            io.micrometer.tracing.handler.DefaultTracingObservationHandler handler) {
-        return registry -> registry.observationConfig().observationHandler(handler);
+            Tracer tracer, Propagator propagator) {
+        return registry -> registry.observationConfig().observationHandler(
+                new ObservationHandler.FirstMatchingCompositeObservationHandler(
+                        new PropagatingReceiverTracingObservationHandler<>(tracer, propagator),
+                        new PropagatingSenderTracingObservationHandler<>(tracer, propagator),
+                        new DefaultTracingObservationHandler(tracer)
+                )
+        );
     }
 }
