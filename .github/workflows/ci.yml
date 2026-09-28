@@ -9,6 +9,10 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        service: [ api-gateway, order-service, inventory-service, notification-service ]
 
     steps:
       - name: Code checkout
@@ -20,16 +24,19 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
           cache: maven
+          cache-dependency-path: ${{ matrix.service }}/pom.xml
 
-      - name: All tests execution
+      - name: Tests execution (${{ matrix.service }})
+        working-directory: ${{ matrix.service }}
         run: mvn -B test
 
       - name: Post tests results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: surefire-reports
-          path: '**/target/surefire-reports/'
+          name: surefire-reports-${{ matrix.service }}
+          path: ${{ matrix.service }}/target/surefire-reports/
+          if-no-files-found: ignore
 
   deploy:
     needs: test
