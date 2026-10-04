@@ -1,8 +1,8 @@
-[![English](https://img.shields.io/badge/Language-English-blue)](README.en.md) [![Español](https://img.shields.io/badge/Idioma-Español-red)](#)
+[![English](https://img.shields.io/badge/Language-English-blue)](README.md) [![Español](https://img.shields.io/badge/Idioma-Español-red)](#)
 
 ---
 
-# Sistema de Pedidos e Inventario en Tiempo Real
+# Sistema de Pedidos e Inventario
 
 [![Java](https://img.shields.io/badge/Java-21-blue)](https://openjdk.org/projects/jdk/21/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.1-brightgreen)](https://spring.io/projects/spring-boot)
