@@ -147,20 +147,20 @@ problema, algo que un dashboard de métricas agregadas no puede mostrar por sí 
 
 **Lecciones aprendidas / troubleshooting**
 
-- `.ignoreTypeHeaders()` es obligatorio en el `JacksonJsonDeserializer` al consumir eventos publicados por otro
-  servicio. Por defecto, Kafka usa el header `__TypeId__` para resolver la clase de destino, y ese header contiene el
-  nombre completo de la clase del *productor*, que no existe en el classpath del *consumidor*. Omitir este flag en un
-  consumidor provoca fallos de deserialización silenciosos que acaban en el dead-letter topic tras los reintentos.
-- `@EnableKafka` no se auto-configura solo con tener `spring-kafka` en el classpath. En Spring Boot 4.1.0 los
-  `@KafkaListener` no se registraban pese a que el `ConcurrentKafkaListenerContainerFactory` estaba correctamente
-  definido como bean. Sin logs de error, sin excepciones al arrancar el contexto: los consumidores simplemente nunca
-  se activaban, dejando los pedidos permanentemente en `PENDING`. Diagnosticado comparando logs de arranque entre
-  servicios (el productor sí logueaba, el consumidor no dejaba ni rastro con `DEBUG` activado) y confirmando con
-  `kafka-consumer-groups.sh --list` que el consumer group nunca llegaba a registrarse en el broker.
-- Testcontainers 2.x reorganizó paquetes: `MySQLContainer` vive ahora en `org.testcontainers.mysql`, no en
-  `org.testcontainers.containers`. Con la clase deprecada, un contenedor de MySQL sin Kafka real hacía que los
-  listeners reintentaran conexión contra `localhost:9092` en bucle, colgando la JVM ~30s al final de cada test aunque
-  el test en sí pasara. La solución fue levantar también un `KafkaContainer` real en los tests de integración.
+- `.ignoreTypeHeaders()` es obligatorio en el `JacksonJsonDeserializer` al consumir eventos de otro servicio: por
+  defecto Kafka usa el header `__TypeId__` con la clase del productor, que no existe en el classpath del consumidor.
+  Sin ese flag, la deserialización falla en silencio y los eventos acaban en el dead-letter topic.
+- `@EnableKafka` no se activa solo con tener `spring-kafka` en el classpath. En Spring Boot 4.1.0 los
+  `@KafkaListener` no se registraban pese a tener el `ConcurrentKafkaListenerContainerFactory` bien definido, sin
+  ningún error visible — los pedidos se quedaban en `PENDING` para siempre. Lo detecté comparando logs de arranque
+  entre servicios y confirmando con `kafka-consumer-groups.sh --list` que el consumer group nunca se registraba.
+- Testcontainers 2.x movió `MySQLContainer` a `org.testcontainers.mysql`. Usar la clase antigua hacía que, sin un
+  Kafka real en el test, los listeners reintentaran conexión en bucle y colgaran la JVM ~30s al final de cada test.
+  La solución fue levantar también un `KafkaContainer` real en los tests de integración.
+- Las trazas no se propagaban entre servicios porque solo tenía registrado el `DefaultTracingObservationHandler`,
+  que crea spans en local pero no propaga el header `traceparent`. Añadir un bean `Propagator` y los handlers de
+  envío/recepción (`PropagatingSenderTracingObservationHandler`/`PropagatingReceiverTracingObservationHandler`) lo
+  resolvió. En el gateway reactivo hizo falta además `reactor.context-propagation: auto`.
 
 ## Dependencias principales
 
