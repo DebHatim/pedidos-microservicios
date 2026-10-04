@@ -1,8 +1,8 @@
-[![English](https://img.shields.io/badge/Language-English-blue)](#) [![Español](https://img.shields.io/badge/Idioma-Español-red)](README.md)
+[![English](https://img.shields.io/badge/Language-English-blue)](#) [![Español](https://img.shields.io/badge/Idioma-Español-red)](README.es.md)
 
 ---
 
-# Real-Time Order & Inventory System
+# Order & Inventory System
 
 [![Java](https://img.shields.io/badge/Java-21-blue)](https://openjdk.org/projects/jdk/21/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.1-brightgreen)](https://spring.io/projects/spring-boot)
@@ -25,7 +25,7 @@ breaker) and push notifications via WebSocket.
 
 ## Demo
 
-![Real-time order flow demo](assets/screenshots/demo.gif)
+![Order flow demo](assets/screenshots/demo.gif)
 
 *Add products to the cart, place the order, and watch the confirmation/rejection notification arrive in real time via
 WebSocket the moment inventory-service evaluates the available stock.*
@@ -210,8 +210,8 @@ an aggregated metrics dashboard can't show on its own.
 **Only requirement:** Docker installed.
 
 ```bash
-git clone https://github.com/DebHatim/pedidos-inventario-microservicios.git
-cd pedidos-inventario-microservicios
+git clone https://github.com/DebHatim/pedidos-microservicios.git
+cd pedidos-microservicios
 docker compose up -d
 ```
 
