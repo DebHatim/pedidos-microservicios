@@ -211,8 +211,8 @@ problema, algo que un dashboard de métricas agregadas no puede mostrar por sí 
 **Requisito único:** tener Docker instalado.
 
 ```bash
-git clone https://github.com/DebHatim/pedidos-inventario-microservicios.git
-cd pedidos-inventario-microservicios
+git clone https://github.com/DebHatim/pedidos-microservicios.git
+cd pedidos-microservicios
 docker compose up -d
 ```
 
