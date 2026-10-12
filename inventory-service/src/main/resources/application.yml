@@ -14,6 +14,10 @@ management:
     web:
       exposure:
         include: health, metrics, prometheus, beans, conditions
+      cors:
+        allowed-origins: "http://localhost"
+        allowed-methods: "*"
+        allow-credentials: true
   endpoint:
     health:
       show-details: always

@@ -110,6 +110,10 @@ management:
       exposure:
         # We expose the vital endpoints for Prometheus and health checks
         include: health, metrics, prometheus
+      cors:
+        allowed-origins: "http://localhost"
+        allowed-methods: "*"
+        allow-credentials: true
   endpoint:
     health:
       show-details: always
