@@ -54,15 +54,16 @@ const SERVICE_HEALTH_ENDPOINTS = [
 ]
 
 export async function getSystemHealth() {
-    return Promise.all(
-        SERVICE_HEALTH_ENDPOINTS.map(async (service) => {
-            try {
-                const response = await fetch(service.url, { signal: AbortSignal.timeout(3000) })
-                const data = await response.json()
-                return { name: service.name, status: data.status === 'UP' ? 'up' : 'down' }
-            } catch {
-                return { name: service.name, status: 'down' }
-            }
-        })
-    )
+    try {
+        const response = await fetch(`${API_BASE_URL}/system/health`, { signal: AbortSignal.timeout(5000) })
+        if (!response.ok) throw new Error('health check failed')
+        return await response.json()
+    } catch {
+        return [
+            { name: 'API Gateway', status: 'down' },
+            { name: 'Order Service', status: 'down' },
+            { name: 'Inventory Service', status: 'down' },
+            { name: 'Notification Service', status: 'down' }
+        ]
+    }
 }

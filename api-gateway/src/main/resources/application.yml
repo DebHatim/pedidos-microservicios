@@ -25,6 +25,7 @@ spring:
                 allowedOriginPatterns:
                   - "http://localhost:5173"
                   - "http://localhost"
+                  - "https://productos.hatimdebboun.dev"
                 allowedMethods:
                   - GET
                   - POST
@@ -111,7 +112,7 @@ management:
         # We expose the vital endpoints for Prometheus and health checks
         include: health, metrics, prometheus
       cors:
-        allowed-origins: "http://localhost"
+        allowed-origins: "http://localhost,https://productos.hatimdebboun.dev"
         allowed-methods: "*"
         allow-credentials: true
   endpoint:
