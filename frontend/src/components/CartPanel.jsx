@@ -1,4 +1,5 @@
 import CartRow from './CartRow.jsx'
+import OrderFlowTimeline from './OrderFlowTimeline.jsx'
 
 const currencyFormatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -43,6 +44,7 @@ export default function CartPanel({
                             Checking available stock. You will receive real-time confirmation
                             as soon as inventory-service processes your order.
                         </p>
+                        <OrderFlowTimeline />
                     </div>
                 )}
 
