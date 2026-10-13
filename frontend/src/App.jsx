@@ -11,6 +11,7 @@ import StatePanel from './components/StatePanel.jsx'
 import CartButton from './components/CartButton.jsx'
 import CartPanel from './components/CartPanel.jsx'
 import { OrderHistory } from './components/OrderHistory.jsx'
+import Footer from './components/Footer.jsx'
 
 export default function App() {
     const [activeTab, setActiveTab] = useState('catalog') // 'catalog' | 'orders'
@@ -88,7 +89,7 @@ export default function App() {
                     Catalog
                 </button>
                 <button className="view-tab" data-active={activeTab === 'orders'}
-                    onClick={() => setActiveTab('orders')}>
+                        onClick={() => setActiveTab('orders')}>
                     My Orders
                 </button>
             </div>
@@ -143,6 +144,8 @@ export default function App() {
             />
 
             <ToastStack toasts={toasts} onDismiss={dismiss} />
+
+            <Footer />
         </div>
     )
 }
