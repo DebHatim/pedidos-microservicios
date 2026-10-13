@@ -1,6 +1,7 @@
 package dev.hatimdebboun.apigateway.health;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@CrossOrigin(origins = {"http://localhost", "http://localhost:5173", "https://productos.hatimdebboun.dev"}, allowCredentials = "true")
 public class SystemHealthController {
 
     // Internal container hostnames + the ports each service is actually configured to listen on (server.port)
