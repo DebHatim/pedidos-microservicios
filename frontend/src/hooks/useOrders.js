@@ -13,7 +13,7 @@ export function useOrders() {
             const data = await getOrders()
             setOrders(data)
         } catch (err) {
-            setError(err.message || 'Error desconocido al cargar pedidos')
+            setError(err.message || 'Unknown error while loading orders')
         } finally {
             setLoading(false)
         }
