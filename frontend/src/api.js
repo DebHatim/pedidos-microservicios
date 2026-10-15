@@ -44,15 +44,6 @@ export async function getOrder(id) {
     return await response.json();
 }
 
-// Direct ports because each service exposes its own /actuator/health
-// (docker-compose binds 8080-8083 on 127.0.0.1)
-const SERVICE_HEALTH_ENDPOINTS = [
-    { name: 'API Gateway', url: 'http://localhost:8080/actuator/health' },
-    { name: 'Order Service', url: 'http://localhost:8081/actuator/health' },
-    { name: 'Inventory Service', url: 'http://localhost:8082/actuator/health' },
-    { name: 'Notification Service', url: 'http://localhost:8083/actuator/health' }
-]
-
 export async function getSystemHealth() {
     try {
         const response = await fetch(`${API_BASE_URL}/system/health`, { signal: AbortSignal.timeout(5000) })

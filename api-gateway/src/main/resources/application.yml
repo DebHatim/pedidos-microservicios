@@ -42,6 +42,24 @@ spring:
 
           # Configuration of routes for microservices
           routes:
+            # Orders microservice Swagger UI/API docs
+            - id: order-service-docs
+              uri: http://order-service:8081
+              predicates:
+                - Path=/order-service/v3/api-docs/**,/order-service/swagger-ui/**,/order-service/swagger-ui.html
+              filters:
+                - RewritePath=/order-service/v3/api-docs/(?<segment>.*), /v3/api-docs/${segment}
+                - RewritePath=/order-service/swagger-ui/(?<segment>.*), /swagger-ui/${segment}
+                - RewritePath=/order-service/swagger-ui.html, /swagger-ui.html
+            # Inventory microservice Swagger UI/API docs
+            - id: inventory-service-docs
+              uri: http://inventory-service:8082
+              predicates:
+                - Path=/inventory-service/v3/api-docs/**,/inventory-service/swagger-ui/**,/inventory-service/swagger-ui.html
+              filters:
+                - RewritePath=/inventory-service/v3/api-docs/(?<segment>.*), /v3/api-docs/${segment}
+                - RewritePath=/inventory-service/swagger-ui/(?<segment>.*), /swagger-ui/${segment}
+                - RewritePath=/inventory-service/swagger-ui.html, /swagger-ui.html
             # Orders microservice
             - id: order-service-route
               uri: http://order-service:8081

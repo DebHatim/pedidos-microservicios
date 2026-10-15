@@ -7,7 +7,11 @@ RUN npm install
 
 COPY . .
 ARG VITE_API_BASE_URL=http://localhost:8080
+ARG VITE_GRAFANA_URL=http://localhost:3000
+ARG VITE_JAEGER_URL=http://localhost:16686
 ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
+ENV VITE_GRAFANA_URL=$VITE_GRAFANA_URL
+ENV VITE_JAEGER_URL=$VITE_JAEGER_URL
 RUN npm run build
 
 # 2 - Serve static files with nginx
