@@ -39,3 +39,6 @@ logging:
   level:
     org.springframework.kafka: INFO
     org.apache.kafka: WARN
+
+springdoc:
+  use-forward-headers: true

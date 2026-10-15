@@ -50,6 +50,8 @@ spring:
               filters:
                 - StripPrefix=1
                 - AddRequestHeader=X-Forwarded-Prefix, /order-service
+                - AddRequestHeader=X-Forwarded-Host, api-productos.hatimdebboun.dev
+                - AddRequestHeader=X-Forwarded-Proto, https
             # Inventory microservice Swagger UI/API docs
             - id: inventory-service-docs
               uri: http://inventory-service:8082
@@ -58,6 +60,8 @@ spring:
               filters:
                 - StripPrefix=1
                 - AddRequestHeader=X-Forwarded-Prefix, /inventory-service
+                - AddRequestHeader=X-Forwarded-Host, api-productos.hatimdebboun.dev
+                - AddRequestHeader=X-Forwarded-Proto, https
             # Orders microservice
             - id: order-service-route
               uri: http://order-service:8081
@@ -129,7 +133,7 @@ management:
     web:
       exposure:
         # We expose the vital endpoints for Prometheus and health checks
-        include: health, metrics, prometheus
+        include: health, metrics, prometheus, gateway
       cors:
         allowed-origins: "http://localhost,https://productos.hatimdebboun.dev"
         allowed-methods: "*"
