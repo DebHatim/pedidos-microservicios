@@ -225,17 +225,24 @@ docker compose up -d
 Ese único comando levanta las 2 bases MySQL, Redis, Kafka, los 4 microservicios y el frontend. Sin necesidad de
 instalar Java, Maven ni Node.
 
-- Frontend: `http://localhost`
-- API Gateway: `http://localhost:8080`
-- Swagger UI (por servicio, vía gateway o puerto directo): `http://localhost:8081/swagger-ui.html` (order-service),
-  `http://localhost:8082/swagger-ui.html` (inventory-service)
-- Health check: `http://localhost:8080/actuator/health`
+- Frontend: `http://localhost:${FRONTEND_PORT}` (puerto por defecto en `.env.example`)
+- API Gateway: `http://localhost:${API_GATEWAY_PORT}`
+- Swagger UI, vía el gateway: `http://localhost:${API_GATEWAY_PORT}/order-service/swagger-ui.html`
+  (order-service), `http://localhost:${API_GATEWAY_PORT}/inventory-service/swagger-ui.html` (inventory-service)
+- Health check: `http://localhost:${API_GATEWAY_PORT}/actuator/health`
+- Estado agregado del sistema (los 4 servicios): `http://localhost:${API_GATEWAY_PORT}/system/health`
 - Prometheus: `http://localhost:9090`
-- Grafana: `http://localhost:3000`
+- Grafana: `http://localhost:${GRAFANA_PORT}`
 - Jaeger UI: `http://localhost:16686`
 
-> Las bases de datos MySQL corren con usuario `root` y contraseña `root`, configuración pensada solo para desarrollo
-> local, no para un despliegue expuesto a internet.
+> `order-service` e `inventory-service` ya no exponen sus propios puertos al host — solo son accesibles a través
+> del gateway o desde dentro de la red de Docker. El Swagger UI se expone a través del gateway con un prefijo de
+> ruta por servicio.
+
+> Las credenciales de MySQL, la contraseña de administrador de Grafana y todos los puertos expuestos se configuran
+> en `.env` — `.env.example` incluye valores de ejemplo (`CHANGEME`) que siempre deben reemplazarse antes de
+> cualquier despliegue accesible desde fuera de tu propia máquina. En producción, Grafana y Jaeger se sirven vía
+> proxy inverso bajo subrutas del dominio principal (`/grafana`, `/jaeger`) en lugar de subdominios separados.
 
 <details>
 <summary>Desarrollo de un microservicio sin Docker (opcional)</summary>

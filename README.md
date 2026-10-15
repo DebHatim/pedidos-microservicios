@@ -234,17 +234,24 @@ docker compose up -d
 This single command spins up both MySQL databases, Redis, Kafka, the 4 microservices and the frontend. No need to
 install Java, Maven or Node.
 
-- Frontend: `http://localhost`
-- API Gateway: `http://localhost:8080`
-- Swagger UI (per service, via gateway or direct port): `http://localhost:8081/swagger-ui.html` (order-service),
-  `http://localhost:8082/swagger-ui.html` (inventory-service)
-- Health check: `http://localhost:8080/actuator/health`
+- Frontend: `http://localhost:${FRONTEND_PORT}` (default port set in `.env.example`)
+- API Gateway: `http://localhost:${API_GATEWAY_PORT}`
+- Swagger UI, via the gateway: `http://localhost:${API_GATEWAY_PORT}/order-service/swagger-ui.html`
+  (order-service), `http://localhost:${API_GATEWAY_PORT}/inventory-service/swagger-ui.html` (inventory-service)
+- Health check: `http://localhost:${API_GATEWAY_PORT}/actuator/health`
+- Aggregated system health (all 4 services): `http://localhost:${API_GATEWAY_PORT}/system/health`
 - Prometheus: `http://localhost:9090`
-- Grafana: `http://localhost:3000`
+- Grafana: `http://localhost:${GRAFANA_PORT}`
 - Jaeger UI: `http://localhost:16686`
 
-> The MySQL databases run with user `root` and password `root`, a setup meant only for local development, not for a
-> deployment exposed to the internet.
+> `order-service` and `inventory-service` no longer expose their own ports to the host, they're only reachable
+> through the gateway or from inside the Docker network. Swagger UI is proxied through the gateway with a path
+> prefix per service.
+
+> MySQL credentials, Grafana's admin password and all exposed ports are set in `.env` - `.env.example` ships with
+> placeholder values (`CHANGEME`) that should always be replaced before any deployment reachable from outside your
+> own machine. In production, Grafana and Jaeger are reverse-proxied under subpaths of the main domain
+> (`/grafana`, `/jaeger`) rather than exposed on separate subdomains.
 
 <details>
 <summary>Developing a service without Docker (optional)</summary>
