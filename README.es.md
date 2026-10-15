@@ -25,7 +25,7 @@ orientada a eventos con Apache Kafka como núcleo de comunicación entre servici
 
 ## Demo
 
-![Demostracion del flujo de pedidos en tiempo real](assets/screenshots/demo.gif)
+![Demostracion del flujo de pedidos en tiempo real](assets/screenshots/demo-v3.gif)
 
 *Añadir productos al carrito, confirmar el pedido y ver la notificación de confirmación/rechazo llegar en tiempo real
 vía WebSocket en el momento en que inventory-service evalúa el stock disponible.*
@@ -89,11 +89,11 @@ disponible.
 <table>
   <tr>
     <td style="width: 50%; text-align: center;">
-      <img src="assets/screenshots/catalog.png" alt="Catálogo de productos con filtro por categoría" />
+      <img src="assets/screenshots/catalog-v2.png" alt="Catálogo de productos con filtro por categoría" />
       <p><em>Catálogo: filtro por categoría, gauge de stock y estados de carga</em></p>
     </td>
     <td style="width: 50%; text-align: center;">
-      <img src="assets/screenshots/cart.png" alt="Carrito de pedido con confirmación en tiempo real" />
+      <img src="assets/screenshots/cart-v2.png" alt="Carrito de pedido con confirmación en tiempo real" />
       <p><em>Carrito: gestión de cantidades y confirmación del pedido en tiempo real</em></p>
     </td>
   </tr>
@@ -209,6 +209,12 @@ problema, algo que un dashboard de métricas agregadas no puede mostrar por sí 
 ## Probarlo en local
 
 **Requisito único:** tener Docker instalado.
+
+Copia `.env.example` a `.env` y ajusta los valores si lo necesitas (los valores por defecto funcionan para uso local):
+
+```bash
+cp .env.example .env
+```
 
 ```bash
 git clone https://github.com/DebHatim/pedidos-microservicios.git

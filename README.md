@@ -25,7 +25,7 @@ breaker) and push notifications via WebSocket.
 
 ## Demo
 
-![Order flow demo](assets/screenshots/demo.gif)
+![Order flow demo](assets/screenshots/demo-v3.gif)
 
 *Add products to the cart, place the order, and watch the confirmation/rejection notification arrive in real time via
 WebSocket the moment inventory-service evaluates the available stock.*
@@ -88,11 +88,11 @@ down, order-service keeps accepting orders normally and events queue up until th
 <table>
   <tr>
     <td style="width: 50%; text-align: center;">
-      <img src="assets/screenshots/catalog.png" alt="Product catalog with category filter" />
+      <img src="assets/screenshots/catalog-v2.png" alt="Product catalog with category filter" />
       <p><em>Catalog: category filter, stock gauge and loading states</em></p>
     </td>
     <td style="width: 50%; text-align: center;">
-      <img src="assets/screenshots/cart.png" alt="Cart with real-time confirmation" />
+      <img src="assets/screenshots/cart-v2.png" alt="Cart with real-time confirmation" />
       <p><em>Cart: quantity management and real-time order confirmation</em></p>
     </td>
   </tr>
@@ -160,6 +160,16 @@ an aggregated metrics dashboard can't show on its own.
   creates spans locally but doesn't propagate the `traceparent` header. Adding a `Propagator` bean plus the
   send/receive handlers (`PropagatingSenderTracingObservationHandler`/`PropagatingReceiverTracingObservationHandler`)
   fixed it. The reactive gateway also needed `reactor.context-propagation: auto`.
+- The browser can't resolve `localhost` to the production VPS, so a `SystemStatus` panel polling each microservice's
+  `/actuator/health` directly (`localhost:8081`, `:8082`...) worked locally but failed entirely in production. Fixed
+  by adding a `/system/health` endpoint to api-gateway that fans out to each service's internal actuator endpoint. The
+  browser only ever talks to the public domain, never to internal container ports.
+- After long idle periods (~12h), the first order placed after inactivity returned a 503 even though order-service
+  had already persisted it and published `order-created` but confirmation still arrived seconds later via WebSocket.
+  Reactor Netty's connection pool in the gateway kept idle connections open indefinitely, while Tomcat's keep-alive
+  timeout (~60s) closed them silently on the backend side; the gateway reused a dead connection for the first
+  request. Fixed with `pool.max-idle-time: 15s` on the gateway's httpclient config, so connections are recycled
+  before the backend can close them.
 
 ## Key dependencies
 
@@ -208,6 +218,12 @@ an aggregated metrics dashboard can't show on its own.
 ## Run it locally
 
 **Only requirement:** Docker installed.
+
+Copy `.env.example` to `.env` and adjust the values if needed (defaults work out of the box for local use):
+
+```bash
+cp .env.example .env
+```
 
 ```bash
 git clone https://github.com/DebHatim/pedidos-microservicios.git
