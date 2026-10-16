@@ -130,6 +130,7 @@ services:
     container_name: order-service
     restart: unless-stopped
     environment:
+      VITE_API_BASE_URL: ${VITE_API_BASE_URL}
       SPRING_DATASOURCE_URL: jdbc:mysql://order-mysql:3306/${ORDER_MYSQL_DATABASE}
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -150,6 +151,7 @@ services:
     container_name: inventory-service
     restart: unless-stopped
     environment:
+      APP_API_BASE_URL: ${VITE_API_BASE_URL}
       SPRING_DATASOURCE_URL: jdbc:mysql://inventory-mysql:3306/${INVENTORY_MYSQL_DATABASE}
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: ${MYSQL_ROOT_PASSWORD}

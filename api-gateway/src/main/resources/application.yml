@@ -48,7 +48,6 @@ spring:
               predicates:
                 - Path=/order-service/**
               filters:
-                - StripPrefix=1
                 - AddRequestHeader=X-Forwarded-Prefix, /order-service
                 - AddRequestHeader=X-Forwarded-Host, api-productos.hatimdebboun.dev
                 - AddRequestHeader=X-Forwarded-Proto, https
@@ -58,7 +57,6 @@ spring:
               predicates:
                 - Path=/inventory-service/**
               filters:
-                - StripPrefix=1
                 - AddRequestHeader=X-Forwarded-Prefix, /inventory-service
                 - AddRequestHeader=X-Forwarded-Host, api-productos.hatimdebboun.dev
                 - AddRequestHeader=X-Forwarded-Proto, https
@@ -139,6 +137,8 @@ management:
         allowed-methods: "*"
         allow-credentials: true
   endpoint:
+    gateway:
+      access: unrestricted
     health:
       show-details: always
 
