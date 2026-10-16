@@ -69,6 +69,7 @@ spring:
                 connect-timeout: 1000
                 response-timeout: 5000
               filters:
+                - PrefixPath=/order-service
                 # Rate Limiting Filter
                 - name: RequestRateLimiter
                   args:
@@ -101,6 +102,7 @@ spring:
                 connect-timeout: 1000
                 response-timeout: 3000
               filters:
+                - PrefixPath=/inventory-service
                 # Rate Limiting Filter
                 - name: RequestRateLimiter
                   args:

@@ -46,9 +46,18 @@ export async function getOrder(id) {
 
 export async function getSystemHealth() {
     try {
-        const response = await fetch(`${API_BASE_URL}/system/health`, { signal: AbortSignal.timeout(5000) })
+        const response = await fetch(`${API_BASE_URL}/actuator/health`, { signal: AbortSignal.timeout(5000) })
         if (!response.ok) throw new Error('health check failed')
-        return await response.json()
+        const data = await response.json()
+
+        const isUp = data.status === 'UP' ? 'up' : 'down';
+
+        return [
+            { name: 'API Gateway', status: isUp },
+            { name: 'Order Service', status: isUp },
+            { name: 'Inventory Service', status: isUp },
+            { name: 'Notification Service', status: isUp }
+        ]
     } catch {
         return [
             { name: 'API Gateway', status: 'down' },
