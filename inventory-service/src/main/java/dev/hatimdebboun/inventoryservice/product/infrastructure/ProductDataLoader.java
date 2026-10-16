@@ -27,7 +27,7 @@ public class ProductDataLoader implements CommandLineRunner {
                 new BigDecimal("799.99"),
                 "Gaming",
                 15L,
-                "products/producto1.jpg"));
+                "products/producto1.webp"));
 
         productRepository.save(new Product(null,
                 "iPhone 15 Pro Max",
@@ -35,7 +35,7 @@ public class ProductDataLoader implements CommandLineRunner {
                 new BigDecimal("1219.00"),
                 "Smartphones",
                 22L,
-                "products/producto2.jpg"));
+                "products/producto2.webp"));
 
         productRepository.save(new Product(null,
                 "Nintendo Switch 2",
@@ -43,7 +43,7 @@ public class ProductDataLoader implements CommandLineRunner {
                 new BigDecimal("449.50"),
                 "Gaming",
                 30L,
-                "products/producto3.jpg"));
+                "products/producto3.webp"));
 
         productRepository.save(new Product(null,
                 "MacBook Pro 14\" M4",
@@ -51,7 +51,7 @@ public class ProductDataLoader implements CommandLineRunner {
                 new BigDecimal("2199.00"),
                 "Laptops",
                 8L,
-                "products/producto4.jpg"));
+                "products/producto4.webp"));
 
         productRepository.save(new Product(null,
                 "Sony WH-1000XM6",
@@ -59,7 +59,7 @@ public class ProductDataLoader implements CommandLineRunner {
                 new BigDecimal("399.99"),
                 "Audio",
                 40L,
-                "products/producto5.jpg"));
+                "products/producto5.webp"));
 
         productRepository.save(new Product(null,
                 "Samsung Galaxy S25 Ultra",
@@ -67,7 +67,7 @@ public class ProductDataLoader implements CommandLineRunner {
                 new BigDecimal("1349.00"),
                 "Smartphones",
                 18L,
-                "products/producto6.jpg"));
+                "products/producto6.webp"));
 
         productRepository.save(new Product(null,
                 "LG OLED C5 55\"",
@@ -75,7 +75,7 @@ public class ProductDataLoader implements CommandLineRunner {
                 new BigDecimal("1599.00"),
                 "TV & Home",
                 6L,
-                "products/producto7.jpg"));
+                "products/producto7.webp"));
 
         productRepository.save(new Product(null,
                 "DJI Mavic 4 Pro",
@@ -83,7 +83,7 @@ public class ProductDataLoader implements CommandLineRunner {
                 new BigDecimal("2399.00"),
                 "Drones",
                 5L,
-                "products/producto8.jpg"));
+                "products/producto8.webp"));
 
         productRepository.save(new Product(null,
                 "Logitech MX Master 4",
@@ -91,7 +91,7 @@ public class ProductDataLoader implements CommandLineRunner {
                 new BigDecimal("119.99"),
                 "Accessories",
                 50L,
-                "products/producto9.jpg"));
+                "products/producto9.webp"));
 
         productRepository.save(new Product(null,
                 "Kindle Oasis 2026",
@@ -99,6 +99,6 @@ public class ProductDataLoader implements CommandLineRunner {
                 new BigDecimal("279.99"),
                 "Reading",
                 25L,
-                "products/producto10.jpg"));
+                "products/producto10.webp"));
     }
 }

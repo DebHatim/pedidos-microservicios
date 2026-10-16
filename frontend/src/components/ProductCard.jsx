@@ -26,7 +26,7 @@ export default function ProductCard({ product, quantityInCart = 0, onAdd }) {
     return (
         <article className="product-card">
             <div className="product-card__media">
-                <img src={product.imageUrl} alt={product.name} loading="lazy" />
+                <img src={product.imageUrl} alt={product.name} loading="eager" fetchPriority="high" />
                 <span className="product-card__category">{product.category}</span>
             </div>
 
