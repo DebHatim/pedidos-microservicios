@@ -98,11 +98,11 @@ down, order-service keeps accepting orders normally and events queue up until th
   </tr>
   <tr>
     <td style="width: 50%; text-align: center;">
-      <img src="assets/screenshots/grafana.png" alt="Grafana dashboard with microservices metrics" />
+      <img src="assets/screenshots/grafana-v2.png" alt="Grafana dashboard with microservices metrics" />
       <p><em>Real-time metrics for all 4 services via Prometheus/Grafana</em></p>
     </td>
     <td style="width: 50%; text-align: center;">
-      <img src="assets/screenshots/jaeger.png" alt="Trace distributed in Jaeger" />
+      <img src="assets/screenshots/jaeger-v2.png" alt="Trace distributed in Jaeger" />
       <p><em>Distributed trace of the order-service flow → Kafka → inventory-service</em></p>
     </td>
   </tr>
@@ -307,7 +307,7 @@ Every push and pull request runs the full suite via GitHub Actions.
       <p><em>Test suite running successfully</em></p>
     </td>
     <td style="width: 50%; text-align: center;">
-      <img src="assets/screenshots/swagger-ui.png" alt="Swagger UI" />
+      <img src="assets/screenshots/swagger-ui-v2.png" alt="Swagger UI" />
       <p><em>API documented and explorable via Swagger UI</em></p>
     </td>
   </tr>

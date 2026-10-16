@@ -99,11 +99,11 @@ disponible.
   </tr>
   <tr>
     <td style="width: 50%; text-align: center;">
-      <img src="assets/screenshots/grafana.png" alt="Dashboard de Grafana con métricas de los microservicios" />
+      <img src="assets/screenshots/grafana-v2.png" alt="Dashboard de Grafana con métricas de los microservicios" />
       <p><em>Métricas en tiempo real de los 4 servicios vía Prometheus/Grafana</em></p>
     </td>
     <td style="width: 50%; text-align: center;">
-      <img src="assets/screenshots/jaeger.png" alt="Traza distribuida en Jaeger" />
+      <img src="assets/screenshots/jaeger-v2.png" alt="Traza distribuida en Jaeger" />
       <p><em>Traza distribuida del flujo order-service → Kafka → inventory-service</em></p>
     </td>
   </tr>
@@ -298,7 +298,7 @@ Cada push y cada pull request ejecutan la suite completa vía GitHub Actions.
       <p><em>Suite de pruebas ejecutada con éxito</em></p>
     </td>
     <td style="width: 50%; text-align: center;">
-      <img src="assets/screenshots/swagger-ui.png" alt="Swagger UI" />
+      <img src="assets/screenshots/swagger-ui-v2.png" alt="Swagger UI" />
       <p><em>API documentada y explorable a través de Swagger UI</em></p>
     </td>
   </tr>
